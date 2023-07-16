@@ -1,6 +1,3 @@
-// import { createApp } from './vendor/vue.esm-browser.js';
-
-// From https://jsonplaceholder.typicode.com/comments
 const emails = [
   'Eliseo@gardner.biz',
   'Jayne_Kuhic@sydney.com',
@@ -34,7 +31,6 @@ const vm = createApp({
   data() {
     return {
       emails,
-      filteredEmails: [...emails],
       filter: {
         search: ''
       }, 
