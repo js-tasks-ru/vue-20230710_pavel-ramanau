@@ -29,4 +29,33 @@ const emails = [
   'Isaias_Kuhic@jarrett.net',
 ];
 
-// Требуется создать Vue приложение
+import { createApp } from './vendor/vue.esm-browser.js';
+const vm = createApp({
+  data() {
+    return {
+      emails,
+      filteredEmails: [...emails],
+      filter: {
+        search: ''
+      }, 
+    };
+  },
+
+  computed: {
+    filteredEmails() {
+      const search = this.filter.search.toLowerCase();
+      if (search) {
+        return this.emails.filter(email => email.toLowerCase().includes(search));
+      }
+      return this.emails;
+    }
+  },
+  methods: {
+    isMatch(email) {
+      const search = this.filter.search.toLowerCase();
+      return search && email.toLowerCase().includes(search);
+    }
+  }
+
+}).mount('#app');
+
