@@ -1,8 +1,13 @@
 import { createApp } from './vendor/vue.esm-browser.js';
-
-import App from './App.vue'
-
-createApp(App).mount('#app')
-
-
-
+const vm = createApp({
+  data() {
+    return {
+      counter: 0,
+    };
+  },
+  methods: {
+    count() {
+      this.counter += 1;
+    },
+  },
+}).mount('#app');

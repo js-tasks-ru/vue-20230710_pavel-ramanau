@@ -24,21 +24,8 @@ const vm = createApp({
   },
 
   methods: {
-    sum() {
-      this.operator = 'sum';
-      return (this.result = this.number_1 + this.number_2);
-    },
-    subtract() {
-      this.operator = 'subtract';
-      return (this.result = this.number_1 - this.number_2);
-    },
-    multiply() {
-      this.operator = 'multiply';
-      return (this.result = this.number_1 * this.number_2);
-    },
-    divide() {
-      this.operator = 'divide';
-      return (this.result = this.number_1 / this.number_2);
+    setOperator(operator) {
+      this.operator = operator;
     },
   },
 }).mount('#app');
