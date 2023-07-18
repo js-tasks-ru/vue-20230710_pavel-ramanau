@@ -38,20 +38,16 @@ const vm = createApp({
   },
 
   computed: {
-    filteredEmails() {
+    markedEmails() {
       const search = this.filter.search.toLowerCase();
-      if (search) {
-        return this.emails.filter(email => email.toLowerCase().includes(search));
-      }
-      return this.emails;
-    }
+      return this.emails.map(email => ({
+        value: email,
+        isMatch: search && email.toLowerCase().includes(search)
+      }));
+    },
   },
-  methods: {
-    isMatch(email) {
-      const search = this.filter.search.toLowerCase();
-      return search && email.toLowerCase().includes(search);
-    }
-  }
+
 
 }).mount('#app');
+
 
