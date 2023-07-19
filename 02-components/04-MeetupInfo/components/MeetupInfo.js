@@ -4,7 +4,8 @@ export default defineComponent({
   name: 'MeetupInfo',
   data() {
     return {
-      options: { day: 'numeric', month: 'long', year: 'numeric' }, // для выввода даты в формате: 8 мая 2020 г.
+      // для выввода даты в формате: 8 мая 2020 г.
+      options: {  year: 'numeric', month: 'long', day: 'numeric',  }, 
     };
   },
   props: {
@@ -28,7 +29,11 @@ export default defineComponent({
       </li>
       <li>
         <img class="icon meetup-info__icon" alt="icon" src="/assets/icons/icon-cal-lg.svg" />
-        <time datetime="2020-01-01">{{ new Date(date).toLocaleDateString('ru-RU', options) }}</time>
+        <time datetime="2020-01-01">{{ new Date(date).toLocaleDateString('en-US', options) }}</time>
       </li>
     </ul>`,
 });
+
+// navigator.language - возвращает строку с информацией о языке, установленном в настройках браузера пользователя
+// 'ru-RU' - использовать русский язык для форматирования даты.
+// undefined - чтобы использовать язык по умолчанию, который установлен в браузере. 
