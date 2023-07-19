@@ -2,12 +2,7 @@ import { defineComponent } from '../vendor/vue.esm-browser.js';
 
 export default defineComponent({
   name: 'MeetupInfo',
-  data() {
-    return {
-      // для выввода даты в формате: 8 мая 2020 г.
-      options: {  year: 'numeric', month: 'long', day: 'numeric',  }, 
-    };
-  },
+
   props: {
     organizer: String,
     place: String,
@@ -16,6 +11,20 @@ export default defineComponent({
       required: true, //обязательный параметр
     },
   },
+
+  computed: {
+    localDate() {
+      return new Date(this.date).toLocaleString(navigator.language, {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      });
+    },
+    isoDate() {
+      return new Date(this.date).toISOString().split('T')[0];
+    },
+  },
+  
 
   template: `
     <ul class="meetup-info">
@@ -29,7 +38,7 @@ export default defineComponent({
       </li>
       <li>
         <img class="icon meetup-info__icon" alt="icon" src="/assets/icons/icon-cal-lg.svg" />
-        <time datetime="2020-01-01">{{ new Date(date).toLocaleDateString('en-US', options) }}</time>
+        <time :datetime="isoDate">{{ localDate }}</time>
       </li>
     </ul>`,
 });
