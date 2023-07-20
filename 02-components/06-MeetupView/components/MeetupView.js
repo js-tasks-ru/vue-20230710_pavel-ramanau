@@ -25,7 +25,7 @@ export default defineComponent({
   data() {
     return {
       meetups,
-      selectedMeetup: 0,
+      selectedMeetup: 2,
       meetupWithImage: {
         title: 'VueConf US',
         image: 'https://course-vue.javascript.ru/api/images/5',
@@ -88,6 +88,7 @@ export default defineComponent({
   template: `
     <div>
     <MeetupCover :title="meetupWithImage.title" :image="meetupWithImage.image" />
+    <!-- <MeetupCover :title="meetupWithoutImage.title" :image="meetupWithoutImage.image" /> -->
 
       <UiContainer>
         <div class="meetup">
