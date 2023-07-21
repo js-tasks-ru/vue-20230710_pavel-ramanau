@@ -31,13 +31,14 @@ export default defineComponent({
   methods: {
     async fetchData() {
       try {
+        this.isLoading = true; 
         this.meetupData = await fetchMeetupById(this.meetupId);
         this.isLoading = false;
         this.error = null;
       } catch (error) {
         console.error(error);
+        this.error = 'Not found';
         this.isLoading = false;
-        this.error = 'Ошибка загрузки митапа';
       }
     },
   },
