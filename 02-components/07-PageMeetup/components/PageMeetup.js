@@ -37,7 +37,7 @@ export default defineComponent({
         this.error = null;
       } catch (error) {
         console.error(error);
-        this.error = 'Not found';
+        this.error = 'Test Error';
         this.isLoading = false;
       }
     },
