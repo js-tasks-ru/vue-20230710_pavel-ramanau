@@ -16,7 +16,7 @@ export default defineComponent({
   },
 
   template: `
-  <!-- <div class="meetup-cover" :style="image && { '--bg-url': \`url('\${image}')\` }"> -->
+    <!-- <div class="meetup-cover"  :style="--bg-url: url(\`\${image}\`)"> -->
     <div class="meetup-cover"  :style="coverStyle">
         <h1 class="meetup-cover__title">{{ title }}</h1>
     </div>`,
