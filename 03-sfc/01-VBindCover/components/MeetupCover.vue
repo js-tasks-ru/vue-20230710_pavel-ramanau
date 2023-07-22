@@ -1,5 +1,5 @@
 <template>
-  <div class="meetup-cover" :style="coverStyle">
+  <div class="meetup-cover">
     <h1 class="meetup-cover__title">{{ title }}</h1>
   </div>
 </template>
@@ -8,34 +8,30 @@
 export default {
   name: 'MeetupCover',
 
-  props:{
-    title: String, 
-    image: String, 
+  props: {
+    title: String,
+    image: String,
   },
 
   computed: {
     coverStyle() {
       if (this.image) {
         // Если есть изображение, используем его из пропса
-        return {
-          'background-image': `linear-gradient(0deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('${this.image}')`,
-        };
+        return `url('${this.image}')`;
       } else {
         // Если нет изображения, используем значение CSS переменной --default-cover
-        return {
-          'background-image': `linear-gradient(0deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), var(--default-cover)`,
-        };
+        return `var(--default-cover)`;
       }
     },
   },
-
-}; 
+};
 </script>
 
 <style scoped>
 .meetup-cover {
   background-size: cover;
   background-position: center;
+  background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), v-bind('coverStyle');
   display: flex;
   flex-direction: column;
   align-items: center;
