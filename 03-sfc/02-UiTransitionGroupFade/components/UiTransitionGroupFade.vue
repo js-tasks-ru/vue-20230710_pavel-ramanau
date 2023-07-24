@@ -1,5 +1,7 @@
 <template>
+
     <TransitionGroup :tag="tag" name="fade-list" :class="transitionGroupClass"> 
+
     <slot />
   </TransitionGroup>
 </template>
