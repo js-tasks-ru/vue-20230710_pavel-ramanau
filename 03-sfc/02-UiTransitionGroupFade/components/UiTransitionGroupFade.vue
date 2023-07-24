@@ -1,5 +1,5 @@
 <template>
-  <TransitionGroup :tag="tag" name="fade-list" class="fade-list">
+    <TransitionGroup :tag="tag" name="fade-list" :class="transitionGroupClass"> 
     <slot />
   </TransitionGroup>
 </template>
@@ -14,12 +14,16 @@ export default {
       default: 'div',
     },
   },
+  computed: {
+    transitionGroupClass() {
+      // Возвращаем уникальный класс, который используем для стилизации элементов внутри компонента
+      return 'fade-list';
+    },
+  },
 };
 </script>
 
-<style>
-/* _transitions.css */
-
+<style scoped>
 .fade-list {
   position: relative;
 }
