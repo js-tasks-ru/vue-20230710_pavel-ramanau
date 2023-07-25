@@ -1,7 +1,5 @@
 <template>
-
-    <TransitionGroup :tag="tag" name="fade-list" :class="transitionGroupClass"> 
-
+  <TransitionGroup :tag="tag" name="fade-list" class="fade-list">
     <slot />
   </TransitionGroup>
 </template>
@@ -16,12 +14,6 @@ export default {
       default: 'div',
     },
   },
-  computed: {
-    transitionGroupClass() {
-      // Возвращаем уникальный класс, который используем для стилизации элементов внутри компонента
-      return 'fade-list';
-    },
-  },
 };
 </script>
 
@@ -29,24 +21,23 @@ export default {
 .fade-list {
   position: relative;
 }
-
-.fade-list > * {
+.fade-list > :deep() {
   opacity: 1;
   transition: opacity 0.3s ease-out;
 }
 
-.fade-list .fade-list-leave-active {
+.fade-list :deep(.fade-list-leave-active) {
   position: absolute !important;
   left: 0;
   right: 0;
 }
 
-.fade-list .fade-list-enter-from,
-.fade-list .fade-list-leave-to {
+.fade-list :deep(.fade-list-enter-from),
+.fade-list :deep(.fade-list-leave-to) {
   opacity: 0;
 }
 
-.fade-list .fade-list-move {
+.fade-list :deep(.fade-list-move) {
   transition: transform 0.3s;
 }
 </style>
