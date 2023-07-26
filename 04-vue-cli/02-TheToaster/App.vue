@@ -8,19 +8,24 @@
 
 <script>
 import TheToaster from './components/TheToaster.vue';
+import { ToastType } from '../../src/constants/constants.js';
 
 export default {
   name: 'App',
 
   components: { TheToaster },
-
+  data() {
+    return {
+      toasterRef: 'toaster', 
+    };
+  },
   methods: {
     handleSuccessClick() {
-      this.$refs.toaster.success('Success ' + new Date().toLocaleTimeString(), 5000);
+      this.$refs.toaster.success(ToastType.SUCCESS + ' ' + new Date().toLocaleTimeString());
     },
 
     handleErrorClick() {
-      this.$refs.toaster.error('Error ' + new Date().toLocaleTimeString(), 5000);
+      this.$refs.toaster.error(ToastType.ERROR + ' ' + new Date().toLocaleTimeString());
     },
   },
 };

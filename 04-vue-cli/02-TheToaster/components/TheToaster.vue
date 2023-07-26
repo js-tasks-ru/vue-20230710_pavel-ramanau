@@ -1,46 +1,45 @@
 <template>
   <div class="toasts">
-    <UiToast :messagesAll="messagesAll" />
+    <UiToasts :messages="messages" @close-toast="handleCloseToast"/>
   </div>
 </template>
 
 <script>
 import UiIcon from './UiIcon.vue';
-import UiToast from './UiToast.vue';
+import UiToasts from './UiToasts.vue';
+import { ToastType, ToastIconMap  } from '../../../src/constants/constants.js';
 
 export default {
   name: 'TheToaster',
 
-  components: { UiIcon, UiToast },
+  components: { UiIcon, UiToasts },
 
   data() {
     return {
-      messagesAll: [], //Сохраняем сообщения в общий массивв сообщений
+      messages: [], //Сохраняем сообщения в общий массивв сообщений
     };
   },
 
   methods: {
-    success(message, time) {  // Метод для добавления сообщения об успехе
-      this.messagesAll.push({
-      message,
-      class: 'toast_success',
-      icon: 'check-circle',
-      time
-    });
+    addToast(type, message) {
+      this.messages.push({
+        type,
+        message,
+        icon: ToastIconMap[type],
+      });
       setTimeout(() => {
-        this.messagesAll.shift();
-      }, time);
+        this.messages.shift();
+      }, 5000);
     },
-    error(message, time) {    // Метод для добавления сообщения об ошибке  
-      this.messagesAll.push({
-      message,
-      class: 'toast_error',
-      icon: 'alert-circle',
-      time
-    });
-      setTimeout(() => {
-        this.messagesAll.shift();
-      }, time);
+    success(message) {
+      this.addToast(ToastType.SUCCESS, message);
+    },
+    error(message) {
+      this.addToast(ToastType.ERROR, message);
+    },
+    handleCloseToast(index) {
+      // обновляем массив сообщений, чтобы удалить закрытый тост
+      this.messages.splice(index, 1);
     },
   },
 };

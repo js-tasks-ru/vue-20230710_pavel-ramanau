@@ -1,28 +1,24 @@
 <template>
-    <div
-      class="toast"
-      v-for="(messageItem, index) in messagesAll"
-      :key="index"
-      :class="messageItem.class"
-    >
-      <UiIcon class="toast__icon" :icon="messageItem.icon" />
-      <span>{{ messageItem.message }}</span>
-      <button class="btn_del" @click="closeToast(index)">
-        <UiIcon class="toast__icon" icon="trash" />
-      </button>
-    </div>
+  <div class="toast" v-for="(messageItem, index) in messages" :key="index" :class="getToastClass(messageItem.type)">
+    <UiIcon class="toast__icon" :icon="getToastIcon(messageItem.type)" />
+    <span>{{ messageItem.message }}</span>
+    <button class="btn_del" @click="closeToast(index)">
+      <UiIcon class="toast__icon iconTrash" icon="trash" />
+    </button>
+  </div>
 </template>
 
 <script>
 import UiIcon from './UiIcon.vue';
+import { ToastClassMap, ToastIconMap } from '../../../src/constants/constants.js';
 
 export default {
-  name: 'UiToast',
+  name: 'UiToasts',
 
   components: { UiIcon },
 
   props: {
-    messagesAll: {
+    messages: {
       type: Array,
       default: function () {
         return [];
@@ -30,15 +26,26 @@ export default {
     },
   },
 
-  methods:{
+  emits: ['close-toast'],
+
+  methods: {
     closeToast(index) {
-      this.messagesAll.splice(index, 1); // начиная с индекса index, удалить 1 элемент
+      this.$emit("close-toast", index); 
+    },
+    getToastClass(type) {
+      return ToastClassMap[type];
+    },
+    getToastIcon(type) {
+      return ToastIconMap[type];
     },
   },
 };
 </script>
 
 <style scoped>
+.iconTrash {
+  filter: hue-rotate(90deg); /* 'Красный' цвет */
+}
 .toast {
   display: flex;
   flex: 0 0 auto;
