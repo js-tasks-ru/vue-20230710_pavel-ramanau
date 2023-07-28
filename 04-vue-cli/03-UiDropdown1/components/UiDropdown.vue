@@ -1,18 +1,20 @@
 <template>
-  <div class="dropdown dropdown_opened">
-    <button type="button" class="dropdown__toggle dropdown__toggle_icon">
-      <UiIcon icon="tv" class="dropdown__icon" />
-      <span>Title</span>
+  <div class="dropdown" :class="{ dropdown_opened: isActive }">
+    <button type="button" class="dropdown__toggle dropdown__toggle_icon" @click="toggleClass">
+      <UiIcon v-if="selectedIcon" :icon="selectedIcon" class="dropdown__icon" />
+      <span>{{ title }}</span>
     </button>
-
-    <div class="dropdown__menu" role="listbox">
-      <button class="dropdown__item dropdown__item_icon" role="option" type="button">
-        <UiIcon icon="tv" class="dropdown__icon" />
-        Option 1
-      </button>
-      <button class="dropdown__item dropdown__item_icon" role="option" type="button">
-        <UiIcon icon="tv" class="dropdown__icon" />
-        Option 2
+    <div class="dropdown__menu" role="listbox" :style="{ display: isActive ? 'flex' : 'none' }">
+      <button
+        class="dropdown__item dropdown__item_icon"
+        role="option"
+        type="button"
+        v-for="(option, index) in options"
+        :key="index"
+        @click="selectOption(option.text, option.icon, option.value)"
+      >
+        <UiIcon v-if="option.icon" :icon="`${option.icon}`" class="dropdown__icon" />
+        {{ option.text }}
       </button>
     </div>
   </div>
@@ -25,6 +27,40 @@ export default {
   name: 'UiDropdown',
 
   components: { UiIcon },
+
+  data() {
+    return {
+      isActive: false,
+      selectedOption: String,
+      selectedValue: '',
+    };
+  },
+
+  props: {
+    options: {
+      type: Array,
+      required: true,
+    },
+    title: {
+      type: String,
+      required: true,
+    },
+    selectedIcon: String,
+  },
+
+  emits: ['change-title'],
+
+  methods: {
+    toggleClass() {
+      this.isActive = !this.isActive; // При каждом клике переключаем значение isActive
+    },
+    selectOption(selectedItem, icon, selectedValue) {
+      this.isActive = !this.isActive; // закрываем список селектов
+      this.selectedOption = selectedItem; // выбранная опция
+      this.selectedValue = selectedValue; // для выбора value, для передачи в кнопку
+      this.$emit('change-title', this.selectedOption, this.selectedValue, icon); // чтобы не мутировал и передача иконки
+    },
+  },
 };
 </script>
 

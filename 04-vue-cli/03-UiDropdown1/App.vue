@@ -2,10 +2,17 @@
   <div class="sample container">
     <h2>With icons</h2>
     <p>selectedType = {{ selectedType }}</p>
-    <p><button @click="selectedType = 'registration'">Set registration</button></p>
+    <p>
+      <button @click="setRegistration">Set registration</button>
+    </p>
     <p><button @click="updateOptions">Remove last option</button></p>
     <p>
-      <UiDropdown v-model="selectedType" :options="agendaItemTypes" title="Событие" />
+      <UiDropdown
+        :options="agendaItemTypes"
+        :title="title"
+        :selected-icon="selectedIcon"
+        @change-title="handleChangeTitle"
+      />
     </p>
 
     <h2>Without icons</h2>
@@ -92,12 +99,27 @@ export default {
       selectedLang: 'EN',
       selectedType: undefined,
       selectedMixed: undefined,
+      title: 'Событие',
+      selectedIcon: '',
     };
   },
 
   methods: {
     updateOptions() {
       this.agendaItemTypes.pop();
+    },
+    handleChangeTitle(selectedOption, selectedValue, selectedIcon) {
+      this.title = selectedOption;
+      this.selectedType = selectedValue;
+      this.selectedIcon = selectedIcon;
+    },
+    setRegistration() {
+      const registrationItem = this.agendaItemTypes.find((item) => item.value === 'registration');
+      if (registrationItem) {
+        this.selectedType = registrationItem.value;
+        this.title = registrationItem.text;
+        this.selectedIcon = 'key'
+      }
     },
   },
 };
