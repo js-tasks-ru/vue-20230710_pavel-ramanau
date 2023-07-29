@@ -1,12 +1,19 @@
 <template>
-  <div class="dropdown" :class="{ dropdown_opened: isActive }">
-    <button type="button" class="dropdown__toggle dropdown__toggle_icon" @click="toggleClass">
+  <div class="dropdown" :class="{ dropdown_opened: isDropdownOpen }">
+    <!-- метод some возвращает true, если хотя бы для одного элемента массива условие возвращается true и добавит класс -->
+    <button
+      type="button"
+      class="dropdown__toggle"
+      :class="{ dropdown__toggle_icon: options.some((option) => option.icon) }"
+      @click="toggleClass"
+    >
       <UiIcon v-if="selectedIcon" :icon="selectedIcon" class="dropdown__icon" />
       <span>{{ title }}</span>
     </button>
-    <div class="dropdown__menu" role="listbox" :style="{ display: isActive ? 'flex' : 'none' }">
+    <div class="dropdown__menu" role="listbox" :style="{ display: isDropdownOpen ? 'flex' : 'none' }">
       <button
-        class="dropdown__item dropdown__item_icon"
+        class="dropdown__item"
+        :class="{ dropdown__item_icon: options.some((option) => option.icon) }"
         role="option"
         type="button"
         v-for="(option, index) in options"
@@ -30,9 +37,7 @@ export default {
 
   data() {
     return {
-      isActive: false,
-      selectedOption: String,
-      selectedValue: '',
+      isDropdownOpen: false,
     };
   },
 
@@ -46,19 +51,24 @@ export default {
       required: true,
     },
     selectedIcon: String,
+    selectedLang: String,
+    modelValue: String,
   },
 
-  emits: ['change-title'],
+  emits: ['change-title', 'change-language', 'change-mixed', 'update:modelValue'],
 
   methods: {
     toggleClass() {
-      this.isActive = !this.isActive; // При каждом клике переключаем значение isActive
+      this.isDropdownOpen = !this.isDropdownOpen; // При каждом клике переключаем значение isActive
     },
-    selectOption(selectedItem, icon, selectedValue) {
-      this.isActive = !this.isActive; // закрываем список селектов
-      this.selectedOption = selectedItem; // выбранная опция
+    selectOption(selectedText, icon, selectedValue) {
+      this.isDropdownOpen = !this.isDropdownOpen; // закрываем список селектов
+      this.selectedOption = selectedText; // выбранная опция text
       this.selectedValue = selectedValue; // для выбора value, для передачи в кнопку
       this.$emit('change-title', this.selectedOption, this.selectedValue, icon); // чтобы не мутировал и передача иконки
+      this.$emit('change-language', this.selectedValue);
+      this.$emit('change-mixed', this.selectedOption, icon);
+      this.$emit('update:modelValue', selectedValue);
     },
   },
 };

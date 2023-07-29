@@ -10,7 +10,7 @@
       <UiDropdown
         :options="agendaItemTypes"
         :title="title"
-        :selected-icon="selectedIcon"
+        :selectedIcon="selectedIcon"
         @change-title="handleChangeTitle"
       />
     </p>
@@ -18,11 +18,21 @@
     <h2>Without icons</h2>
     <p>selectedLang = {{ selectedLang }}</p>
     <p>
-      <UiDropdown v-model="selectedLang" :options="langOptions" title="Язык" />
+      <UiDropdown
+        :options="langOptions"
+        :title="selectedLang"
+        :selectedLang="selectedLang"
+        @change-language="handleChangeLanguage"
+      />
     </p>
-
     <h2>Mixed icons</h2>
-    <UiDropdown v-model="selectedMixed" :options="mixedIconsOptions" title="Mixed icons" />
+    <UiDropdown
+      :selectedMixed="selectedMixed"
+      :options="mixedIconsOptions"
+      :title="selectedMixed"
+      :selectedIcon="selectedIconMixed"
+      @change-mixed="handleChangeMixed"
+    />
     <p></p>
   </div>
 </template>
@@ -98,9 +108,10 @@ export default {
 
       selectedLang: 'EN',
       selectedType: undefined,
-      selectedMixed: undefined,
+      selectedMixed: 'Mixed icons',
       title: 'Событие',
       selectedIcon: '',
+      selectedIconMixed: '',
     };
   },
 
@@ -108,8 +119,8 @@ export default {
     updateOptions() {
       this.agendaItemTypes.pop();
     },
-    handleChangeTitle(selectedOption, selectedValue, selectedIcon) {
-      this.title = selectedOption;
+    handleChangeTitle(selectedText, selectedValue, selectedIcon) {
+      this.title = selectedText;
       this.selectedType = selectedValue;
       this.selectedIcon = selectedIcon;
     },
@@ -118,8 +129,15 @@ export default {
       if (registrationItem) {
         this.selectedType = registrationItem.value;
         this.title = registrationItem.text;
-        this.selectedIcon = 'key'
+        this.selectedIcon = 'key';
       }
+    },
+    handleChangeLanguage(selectedLang) {
+      this.selectedLang = selectedLang; // Обновляем значение selectedLang при выборе языка
+    },
+    handleChangeMixed(selectedMixed, selectedIcon) {
+      this.selectedMixed = selectedMixed;
+      this.selectedIconMixed = selectedIcon;
     },
   },
 };
