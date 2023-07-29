@@ -24,6 +24,12 @@
         {{ option.text }}
       </button>
     </div>
+    <!-- Новый скрытый элемент <select> -->
+    <select class="dropdown__select" v-model="selectedValue" style="display: none">
+      <option v-for="(option, index) in options" :key="index" :value="option.value">
+        {{ option.text }}
+      </option>
+    </select>
   </div>
 </template>
 
@@ -38,6 +44,7 @@ export default {
   data() {
     return {
       isDropdownOpen: false,
+      selectedValue: this.modelValue, // select получает значение из пропса modelValue
     };
   },
 
@@ -56,6 +63,15 @@ export default {
   },
 
   emits: ['change-title', 'change-language', 'change-mixed', 'update:modelValue'],
+
+  watch: {
+    modelValue(newValue) {
+      this.selectedValue = newValue; // Обновляем значение <select> при изменении пропса modelValue снаружи компонента
+    },
+    selectedValue(newValue) {
+      this.$emit('update:modelValue', newValue); 
+    },
+  },
 
   methods: {
     toggleClass() {

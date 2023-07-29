@@ -34,6 +34,14 @@
       @change-mixed="handleChangeMixed"
     />
     <p></p>
+    <!-- Новый блок для скрытого <select> -->
+      <div style="display: none;">
+        <select v-model="selectedType">
+          <option v-for="(item, index) in agendaItemTypes" :key="index" :value="item.value">
+            {{ item.text }}
+          </option>
+        </select>
+      </div>
   </div>
 </template>
 
