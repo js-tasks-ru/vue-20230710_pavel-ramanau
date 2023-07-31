@@ -55,7 +55,6 @@ export default {
   data() {
     return {
       isDropdownOpen: false, // открыт ли список вариантов
-      selectedOption: null,
     };
   },
   // метод some возвращает true, если хотя бы для одного элемента массива условие возвращается true и добавит класс
@@ -63,7 +62,11 @@ export default {
     isIcon() {
       return this.options.some((option) => option.icon !== undefined);
     },
+    selectedOption() {
+    return this.options.find((option) => option.value === this.modelValue) || null;
   },
+  },
+
   // для обновления selectedOption, когда значение modelValue меняется извне
   watch: {
     modelValue: {
@@ -83,7 +86,7 @@ export default {
     },
     //вызывается при выборе одного из вариантов
     selectOption(option) {
-      this.selectedOption = option; //устанавливает выбранный вариант в selectedOption
+
       this.isDropdownOpen = false; //закрывает список
       this.$emit('update:modelValue', option.value); //событие обновления значения
     },

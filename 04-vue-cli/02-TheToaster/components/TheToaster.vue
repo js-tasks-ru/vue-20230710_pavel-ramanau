@@ -1,13 +1,13 @@
 <template>
   <div class="toasts">
-    <UiToasts :messages="messages" @close-toast="handleCloseToast"/>
+    <UiToasts :messages="messages" @close-toast="handleCloseToast" />
   </div>
 </template>
 
 <script>
 import UiIcon from './UiIcon.vue';
 import UiToasts from './UiToasts.vue';
-import { ToastType, ToastIconMap  } from '../../../src/constants/constants.js';
+import { ToastType, ToastIconMap } from '@/constants/constants.js';
 
 export default {
   name: 'TheToaster',
@@ -22,15 +22,28 @@ export default {
 
   methods: {
     addToast(type, message) {
-      this.messages.push({
-        type,
-        message,
-        icon: ToastIconMap[type],
-      });
-      setTimeout(() => {
-        this.messages.shift();
-      }, 5000);
+      // проверяем, есть ли тост с такими же type и message в массиве messages перед добавлением нового тоста. 
+      // Если такой тост уже есть, то новый не добавляется, а существующему обновляется таймер удаления.
+      const existingToast = this.messages.find((toast) => toast.type === type && toast.message === message);
+
+      if (!existingToast) {
+        const toast = {
+          type,
+          message,
+          icon: ToastIconMap[type],
+        };
+
+        this.messages.push(toast);
+
+        setTimeout(() => {
+          const index = this.messages.indexOf(toast);
+          if (index !== -1) {
+            this.messages.splice(index, 1);
+          }
+        }, 5000);
+      }
     },
+
     success(message) {
       this.addToast(ToastType.SUCCESS, message);
     },
