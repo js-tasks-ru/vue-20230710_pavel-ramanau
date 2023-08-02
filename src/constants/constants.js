@@ -3,12 +3,12 @@ export const ToastType = {
   ERROR: 'error',
 };
 
-export const ToastClassMap = {
-  [ToastType.SUCCESS]: 'toast_success',
-  [ToastType.ERROR]: 'toast_error',
-};
+// export const ToastClassMap = {
+//   [ToastType.SUCCESS]: 'toast_success',
+//   [ToastType.ERROR]: 'toast_error',
+// };
 
-export const ToastIconMap = {
-  [ToastType.SUCCESS]: 'check-circle',
-  [ToastType.ERROR]: 'alert-circle',
-};
+// export const ToastIconMap = {
+//   [ToastType.SUCCESS]: 'check-circle',
+//   [ToastType.ERROR]: 'alert-circle',
+// };

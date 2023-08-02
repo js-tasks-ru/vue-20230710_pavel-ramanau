@@ -10,7 +10,17 @@
 
 <script>
 import UiIcon from './UiIcon.vue';
-import { ToastClassMap, ToastIconMap } from '../../../src/constants/constants.js';
+import { ToastType } from '@/constants/constants.js';
+
+export const ToastClassMap = {
+  [ToastType.SUCCESS]: 'toast_success',
+  [ToastType.ERROR]: 'toast_error',
+};
+
+export const ToastIconMap = {
+  [ToastType.SUCCESS]: 'check-circle',
+  [ToastType.ERROR]: 'alert-circle',
+};
 
 export default {
   name: 'UiToasts',
@@ -24,6 +34,7 @@ export default {
         return [];
       },
     },
+  
   },
 
   emits: ['close-toast'],

@@ -69,14 +69,7 @@ export default {
 
   // для обновления selectedOption, когда значение modelValue меняется извне
   watch: {
-    modelValue: {
-      immediate: true, //вызван немедленно при создании компонента
-      handler(newValue) { 
-        //ищем вариант, у которого значение value совпадает с новым значением modelValue. 
-        //Если такой вариант найден, устанавливаем его в selectedOption, чтобы отобразить его текст 
-        this.selectedOption = this.options.find((option) => option.value === newValue) || null;
-      },
-    },
+    modelValue(){},
   },
 
   methods: {

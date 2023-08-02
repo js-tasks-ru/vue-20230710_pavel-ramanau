@@ -7,7 +7,8 @@
 <script>
 import UiIcon from './UiIcon.vue';
 import UiToasts from './UiToasts.vue';
-import { ToastType, ToastIconMap } from '@/constants/constants.js';
+import { ToastType } from '@/constants/constants.js';
+import { ToastIconMap } from './UiToasts.vue';
 
 export default {
   name: 'TheToaster',
@@ -22,27 +23,22 @@ export default {
 
   methods: {
     addToast(type, message) {
-      // проверяем, есть ли тост с такими же type и message в массиве messages перед добавлением нового тоста. 
-      // Если такой тост уже есть, то новый не добавляется, а существующему обновляется таймер удаления.
-      const existingToast = this.messages.find((toast) => toast.type === type && toast.message === message);
+    // Добавляем новый тост в массив сообщений напрямую.
+    const toast = {
+      type,
+      message,
+      icon: ToastIconMap[type],
+    };
 
-      if (!existingToast) {
-        const toast = {
-          type,
-          message,
-          icon: ToastIconMap[type],
-        };
+    this.messages.push(toast);
 
-        this.messages.push(toast);
-
-        setTimeout(() => {
-          const index = this.messages.indexOf(toast);
-          if (index !== -1) {
-            this.messages.splice(index, 1);
-          }
-        }, 5000);
+    setTimeout(() => {
+      const index = this.messages.indexOf(toast);
+      if (index !== -1) {
+        this.messages.splice(index, 1);
       }
-    },
+    }, 5000);
+  },
 
     success(message) {
       this.addToast(ToastType.SUCCESS, message);
