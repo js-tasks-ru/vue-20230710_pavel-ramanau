@@ -7,8 +7,7 @@
       </span>
       <span v-else>{{ title }}</span>
     </button>
-
-    <div class="dropdown__menu" role="listbox" :style="{ display: isDropdownOpen ? 'flex' : 'none' }">
+    <div class="dropdown__menu" role="listbox"  v-show="isDropdownOpen">
       <button
         v-for="(option, index) in options"
         :key="index"

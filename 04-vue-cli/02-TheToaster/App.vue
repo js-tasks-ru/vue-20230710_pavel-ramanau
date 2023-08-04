@@ -8,7 +8,7 @@
 
 <script>
 import TheToaster from './components/TheToaster.vue';
-import { ToastType } from '@/constants/constants.js';
+import { ToastType } from './constants/constants.js';
 
 export default {
   name: 'App',

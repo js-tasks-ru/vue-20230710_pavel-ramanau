@@ -10,7 +10,7 @@
 
 <script>
 import UiIcon from './UiIcon.vue';
-import { ToastType } from '@/constants/constants.js';
+import { ToastType } from '../constants/constants.js';
 
 export const ToastClassMap = {
   [ToastType.SUCCESS]: 'toast_success',

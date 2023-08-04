@@ -7,7 +7,7 @@
 <script>
 import UiIcon from './UiIcon.vue';
 import UiToasts from './UiToasts.vue';
-import { ToastType } from '@/constants/constants.js';
+import { ToastType } from '../constants/constants.js';
 import { ToastIconMap } from './UiToasts.vue';
 
 export default {
