@@ -41,4 +41,32 @@ export const router = createRouter({
       ],
     },
   ],
+
+  scrollBehavior(to, from, savedPosition) {
+    if (to.hash) {
+      // прокрутка к элементу с соответствующим id
+      return {
+        el: to.hash,
+        behavior: 'smooth',
+      };
+    }
+
+    if (savedPosition) {
+      // для сохранения позиции, при переходе назад\вперед
+      return savedPosition;
+    }
+    // При переходе на маршруты с meta свойством saveScrollPosition, сохранить позицию
+    if (to.meta.saveScrollPosition && from.meta.saveScrollPosition) {
+      return false; // Оставить текущую позицию
+    }
+    // При переходе на маршруты c истинным meta свойством saveScrollPosition у to
+     // При переходе на маршруты c истинным meta свойством saveScrollPosition у from
+    if (
+      (to.meta.saveScrollPosition && !from.meta.saveScrollPosition) ||
+      (!to.meta.saveScrollPosition && from.meta.saveScrollPosition)
+    ) {
+      return { left: 0, top: 0 };
+    }
+    return { left: 0, top: 0 }; // прокрутить в начало
+  },
 });
