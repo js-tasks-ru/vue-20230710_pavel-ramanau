@@ -50,7 +50,6 @@ export const router = createRouter({
         behavior: 'smooth',
       };
     }
-
     if (savedPosition) {
       // для сохранения позиции, при переходе назад\вперед
       return savedPosition;
@@ -58,14 +57,6 @@ export const router = createRouter({
     // При переходе на маршруты с meta свойством saveScrollPosition, сохранить позицию
     if (to.meta.saveScrollPosition && from.meta.saveScrollPosition) {
       return false; // Оставить текущую позицию
-    }
-    // При переходе на маршруты c истинным meta свойством saveScrollPosition у to
-     // При переходе на маршруты c истинным meta свойством saveScrollPosition у from
-    if (
-      (to.meta.saveScrollPosition && !from.meta.saveScrollPosition) ||
-      (!to.meta.saveScrollPosition && from.meta.saveScrollPosition)
-    ) {
-      return { left: 0, top: 0 };
     }
     return { left: 0, top: 0 }; // прокрутить в начало
   },

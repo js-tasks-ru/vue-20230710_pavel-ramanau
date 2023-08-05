@@ -14,7 +14,7 @@
           </div>
         </UiFormGroup>
         <div class="form__buttons">
-          <button type="submit" class="button button_primary button_block" @click.prevent="handleSubmit">Войти</button>
+          <button type="submit" class="button button_primary button_block">Войти</button>
         </div>
         <div class="form__append">Нет аккаунта? 
           <router-link :to="{name: 'register'}" class="link">Зарегистрируйтесь</router-link>
