@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import { isAuthenticated } from '../services/authService.js';
+import { authGuard } from './routerGuards.js';
 
 const router = createRouter({
   history: createWebHistory('/05-vue-router/05-AuthGuard'),
@@ -39,5 +39,8 @@ const router = createRouter({
     },
   ],
 });
+
+// для применения authGuard перед каждой навигацией
+router.beforeEach(authGuard);
 
 export { router };
