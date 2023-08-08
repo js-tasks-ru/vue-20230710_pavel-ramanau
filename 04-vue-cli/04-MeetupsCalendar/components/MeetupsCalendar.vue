@@ -14,8 +14,6 @@
     </div>
 
     <div class="calendar-view__grid">
-      <!-- нужно отобразить через v-for -->
-      <!-- calendar-view__cell_inactive добавляем класс только если isCurrentMonth: false -->
       <div
         class="calendar-view__cell"
         :class="{ 'calendar-view__cell_inactive': !day.isCurrentMonth }"
@@ -70,54 +68,67 @@ export default {
       const firstDay = new Date(Date.UTC(currentYear, currentMonth, 1)); // Первый день текущего месяца (год, месяц, номер дня)
       const lastDay = new Date(Date.UTC(currentYear, currentMonth + 1, 0)); // Последний день текущего месяца.
 
+      const startDayOfWeek = firstDay.getUTCDay(); // 0 - вс, 1 - пн... день недели, с которого начинается неделя
+
+      // количество дней в предыдущем месяце
+      // .getUTCDate() извлекает день месяца из объекта Date. это число будет количеством дней в предыдущем месяце.
+      const daysInPrevMonth = new Date(Date.UTC(currentYear, currentMonth, 0)).getUTCDate();
+
       let days = [];
 
-      // Перебираем дни от первого до последнего
+      // дни ПРЕДЫДУЩЕГО месяца, попадающие на первую неделю текущего месяца
+      for (let i = startDayOfWeek - 1; i >= 0; i--) {
+        days.push({
+          day: daysInPrevMonth - i,
+          date: null, // это дни предыдущего месяца и у них нет даты в формате UNIX Timestamp.
+          isCurrentMonth: false,
+        });
+      }
+
+      // Перебираем дни от первого до последнего(ТЕКУЩИЙ месяц)
       for (let date = firstDay; date <= lastDay; date.setUTCDate(date.getUTCDate() + 1)) {
         const day = date.getUTCDate(); // получаем число (день месяца)
         days.push({
           day,
           date: +date, // Преобразуем дату в милисекунды
-          isCurrentMonth: date.getUTCMonth() === currentMonth, // Флаг, указывающий, что день принадлежит текущему месяцу
+          isCurrentMonth: true, // Флаг, указывающий, что день принадлежит текущему месяцу
         });
       }
+
+      // дни СЛЕДУЮЩЕГО месяца, попадающие на последнюю неделю текущего месяца
+      for (let i = 1; days.length % 7 !== 0; i++) {
+        days.push({
+          day: i,
+          date: null, 
+          isCurrentMonth: false,
+        });
+      }
+
       return days; //массив объектов  {day: 1, date: 1690833600000, isCurrentMonth: true}
     },
   },
 
   methods: {
-    //определяет первый и последний день текущего месяца на основе текущей даты
-    // getMonthRange(date) {},
-
     nextMonth() {
-      // получаем дату следующего месяца
-      // this.date = new Date(this.date.setMonth(this.date.getMonth() + 1));
-      // this.getTitelData()
       const newDate = new Date(this.date);
       newDate.setUTCMonth(newDate.getUTCMonth() + 1);
-
       // если новый месяц имеет меньше дней, чем текущий,
       // то переносим дату на последний день нового месяца
       if (this.date.getUTCDate() > newDate.getUTCDate()) {
-        newDate.setUTCDate(0);
+        newDate.setUTCDate(15); //число 15, чтобы избежать проблем
       }
       this.date = newDate;
     },
     previousMonth() {
-      // получаем дату предыдущего месяца
-      // this.date = new Date(this.date.setMonth(this.date.getMonth() - 1));
-      // this.getTitelData();
       const newDate = new Date(this.date);
       newDate.setUTCMonth(newDate.getUTCMonth() - 1);
-
       // если новый месяц имеет меньше дней, чем текущий,
       // то переносим дату на последний день нового месяца
       if (this.date.getUTCDate() > newDate.getUTCDate()) {
-        newDate.setUTCDate(0);
+        newDate.setUTCDate(15); 
       }
       this.date = newDate;
     },
-    
   },
 };
 </script>
