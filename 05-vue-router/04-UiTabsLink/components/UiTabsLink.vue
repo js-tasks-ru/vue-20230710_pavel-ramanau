@@ -1,5 +1,5 @@
 <template>
-  <RouterLink :to="to" class="tabs__tab" :class="{ tabs__tab_active: isActive }" role="tab">
+  <RouterLink :to="to" class="tabs__tab" activeClass="tabs__tab_active" role="tab">
     <slot />
   </RouterLink>
 </template>
@@ -12,14 +12,6 @@ export default {
     to: [String, Object],
   },
 
-  computed: {
-    isActive() {
-      // позволяет получить объект с информацией о том, как будет обработан переданный маршрут, без непосредственной навигации.
-      // {fullPath: '/meetups/2', hash: '', query: {…}, name: 'meetup.description', path: '/meetups/2',…}
-      const resolvedRoute = this.$router.resolve(this.to);
-      return resolvedRoute.fullPath === this.$route.fullPath;
-    },
-  },
 };
 </script>
 
