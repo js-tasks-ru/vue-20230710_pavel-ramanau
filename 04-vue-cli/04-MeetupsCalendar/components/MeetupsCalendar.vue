@@ -45,11 +45,6 @@ export default {
   data() {
     return {
       date: new Date(), // Получаем текущую дату
-      //вывод заголовка календаря
-      titelData: new Date().toLocaleDateString('RU', {
-        month: 'long',
-        year: 'numeric',
-      }),
     };
   },
 
@@ -61,29 +56,33 @@ export default {
   },
 
   computed: {
+    titelData() {
+      return this.date.toLocaleDateString(navigator.language, {
+        month: 'long',
+        year: 'numeric',
+      });
+    },
     //формирует дни текущего месяца
     currentMonthDays() {
-      const currentYear = this.date.getFullYear(); // Текущий год
-      const currentMonth = this.date.getMonth(); // Текущий месяц, нумерация месяцев начинается с 0 до 11
+      const currentYear = this.date.getUTCFullYear(); // Текущий год
+      const currentMonth = this.date.getUTCMonth(); // Текущий месяц, нумерация месяцев начинается с 0 до 11
 
-      const firstDay = new Date(currentYear, currentMonth, 1); // Первый день текущего месяца (год, месяц, номер дня)
-      const lastDay = new Date(currentYear, currentMonth + 1, 0); // Последний день текущего месяца.
+      const firstDay = new Date(Date.UTC(currentYear, currentMonth, 1)); // Первый день текущего месяца (год, месяц, номер дня)
+      const lastDay = new Date(Date.UTC(currentYear, currentMonth + 1, 0)); // Последний день текущего месяца.
 
       let days = [];
 
       // Перебираем дни от первого до последнего
-      for (let date = firstDay; date <= lastDay; date.setDate(date.getDate() + 1)) {
-        const day = date.getDate(); // получаем число (день месяца)
+      for (let date = firstDay; date <= lastDay; date.setUTCDate(date.getUTCDate() + 1)) {
+        const day = date.getUTCDate(); // получаем число (день месяца)
         days.push({
           day,
           date: +date, // Преобразуем дату в милисекунды
-          isCurrentMonth: date.getMonth() === currentMonth, // Флаг, указывающий, что день принадлежит текущему месяцу
+          isCurrentMonth: date.getUTCMonth() === currentMonth, // Флаг, указывающий, что день принадлежит текущему месяцу
         });
       }
       return days; //массив объектов  {day: 1, date: 1690833600000, isCurrentMonth: true}
     },
-
-
   },
 
   methods: {
@@ -92,22 +91,33 @@ export default {
 
     nextMonth() {
       // получаем дату следующего месяца
-      this.date = new Date(this.date.setMonth(this.date.getMonth() + 1));
-      this.getTitelData()
+      // this.date = new Date(this.date.setMonth(this.date.getMonth() + 1));
+      // this.getTitelData()
+      const newDate = new Date(this.date);
+      newDate.setUTCMonth(newDate.getUTCMonth() + 1);
+
+      // если новый месяц имеет меньше дней, чем текущий,
+      // то переносим дату на последний день нового месяца
+      if (this.date.getUTCDate() > newDate.getUTCDate()) {
+        newDate.setUTCDate(0);
+      }
+      this.date = newDate;
     },
     previousMonth() {
       // получаем дату предыдущего месяца
-      this.date = new Date(this.date.setMonth(this.date.getMonth() - 1));
-      this.getTitelData()
-    },
+      // this.date = new Date(this.date.setMonth(this.date.getMonth() - 1));
+      // this.getTitelData();
+      const newDate = new Date(this.date);
+      newDate.setUTCMonth(newDate.getUTCMonth() - 1);
 
-    getTitelData() { // изметяет titelData
-    this.titelData = this.date.toLocaleDateString('RU', {
-        month: 'long',
-        year: 'numeric',
-      })
+      // если новый месяц имеет меньше дней, чем текущий,
+      // то переносим дату на последний день нового месяца
+      if (this.date.getUTCDate() > newDate.getUTCDate()) {
+        newDate.setUTCDate(0);
+      }
+      this.date = newDate;
     },
-
+    
   },
 };
 </script>
