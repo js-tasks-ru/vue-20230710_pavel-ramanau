@@ -1,13 +1,29 @@
 <template>
-  <div class="input-group input-group_icon input-group_icon-left input-group_icon-right">
-    <div class="input-group__icon">
-      <img class="icon" alt="icon" />
+  <div
+    class="input-group"
+    :class="[
+      'input-group_icon',
+      { ['input-group_icon-left']: $slots['left-icon'] },
+      { 'input-group_icon-right': $slots['right-icon'] },
+    ]"
+  >
+    <div class="input-group__icon" v-if="$slots['left-icon']">
+      <slot name="left-icon" />
     </div>
 
-    <input ref="input" class="form-control form-control_rounded form-control_sm" />
-
-    <div class="input-group__icon">
-      <img class="icon" alt="icon" />
+    <component
+      :is="typeTag"
+      ref="input"
+      class="form-control"
+      :class="[isSmall, isRounded, isMultiLine]"
+      v-bind="$attrs"
+      v-model="localValue"
+      :modelValue="localValue"
+    >
+    </component>
+  
+    <div class="input-group__icon" v-if="$slots['right-icon']">
+      <slot name="right-icon" />
     </div>
   </div>
 </template>
@@ -15,6 +31,78 @@
 <script>
 export default {
   name: 'UiInput',
+
+  inheritAttrs: false,
+
+  data() {
+    return {
+      localValue: this.value,
+    };
+  },
+
+  props: {
+    small: {
+      type: Boolean,
+      default: false,
+    },
+    rounded: {
+      type: Boolean,
+      default: false,
+    },
+    multiline: {
+      type: Boolean,
+      default: false,
+    },
+    value: {
+      type: String,
+      default: '',
+    },
+  },
+
+  emits: ['update:modelValue', 'input'],
+
+  watch: {
+    localValue(newValue) {
+      this.$emit('update:modelValue', newValue);
+      this.$emit('input', newValue); 
+    },
+    value(newValue) {
+      this.localValue = newValue;
+    },
+  },
+
+  computed: {
+    isSmall() {
+      const isThisSmall = {
+        true: 'form-control_sm',
+        false: '',
+      };
+      return isThisSmall[this.small];
+    },
+    isRounded() {
+      const isThisRounded = {
+        true: 'form-control_rounded',
+        false: '',
+      };
+      return isThisRounded[this.rounded];
+    },
+    isMultiLine() {
+      const isThisMultiLine = {
+        true: 'textarea',
+        false: '',
+      };
+      return isThisMultiLine[this.multiline];
+    },
+    typeTag() {
+      return this.multiline ? 'textarea' : 'input';
+    },
+  },
+
+  methods: {
+    focus() {
+      this.$refs.input.focus();
+    },
+  },
 };
 </script>
 
