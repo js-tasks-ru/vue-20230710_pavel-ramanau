@@ -18,10 +18,12 @@
       :class="[isSmall, isRounded, isMultiLine]"
       v-bind="$attrs"
       v-model="localValue"
-      :modelValue="localValue"
+      @input="$emit('update:modelValue', $event.target.value)"
+      :value="localValue"
+      @update:modelValue="localValue = $event"
     >
     </component>
-  
+    
     <div class="input-group__icon" v-if="$slots['right-icon']">
       <slot name="right-icon" />
     </div>
@@ -30,7 +32,7 @@
 
 <script>
 export default {
-  name: 'UiInput',
+  name: "UiInput",
 
   inheritAttrs: false,
 
@@ -55,46 +57,55 @@ export default {
     },
     value: {
       type: String,
-      default: '',
+      default: 'value',
     },
   },
 
-  emits: ['update:modelValue', 'input'],
+  emits: ["update:modelValue"],
 
   watch: {
-    localValue(newValue) {
-      this.$emit('update:modelValue', newValue);
-      this.$emit('input', newValue); 
+    value: {
+      deep: true,
+      immediate: true,
+      handler(newValue) {
+        if (newValue !== this.localValue) {
+          this.localValue = newValue;
+        }
+      },
     },
-    value(newValue) {
-      this.localValue = newValue;
+    localValue: {
+      deep: true,
+      handler(newValue) {
+        this.$emit("update:modelValue", newValue);
+      },
     },
+
   },
 
   computed: {
     isSmall() {
       const isThisSmall = {
-        true: 'form-control_sm',
-        false: '',
+        true: "form-control_sm",
+        false: "",
       };
       return isThisSmall[this.small];
     },
     isRounded() {
       const isThisRounded = {
-        true: 'form-control_rounded',
-        false: '',
+        true: "form-control_rounded",
+        false: "",
       };
       return isThisRounded[this.rounded];
     },
     isMultiLine() {
       const isThisMultiLine = {
-        true: 'textarea',
-        false: '',
+        true: "textarea",
+        false: "",
       };
       return isThisMultiLine[this.multiline];
     },
     typeTag() {
-      return this.multiline ? 'textarea' : 'input';
+      return this.multiline ? "textarea" : "input";
     },
   },
 
@@ -112,7 +123,7 @@ export default {
   height: 52px;
   border-radius: 8px;
   border: 2px solid var(--blue-light);
-  font-family: 'Nunito', sans-serif;
+  font-family: "Nunito", sans-serif;
   font-weight: 600;
   font-size: 20px;
   line-height: 28px;
