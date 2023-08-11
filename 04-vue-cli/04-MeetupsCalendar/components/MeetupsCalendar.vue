@@ -8,7 +8,7 @@
           aria-label="Previous month"
           @click="previousMonth"
         ></button>
-        <div class="calendar-view__date">{{ titelData }}</div>
+        <div class="calendar-view__date">{{ titleData }}</div>
         <button class="calendar-view__control-right" type="button" aria-label="Next month" @click="nextMonth"></button>
       </div>
     </div>
@@ -22,16 +22,13 @@
         :key="index"
       >
         <div class="calendar-view__cell-day">{{ day.day }}</div>
-        <div class="calendar-view__cell-content"></div>
-      </div>
-
-      <!-- <div class="calendar-view__cell" tabindex="0">
-        <div class="calendar-view__cell-day">12</div>
         <div class="calendar-view__cell-content">
-          <a href="/meetups/1" class="calendar-event">Meetup 1</a>
-          <a href="/meetups/2" class="calendar-event">Meetup 2</a>
+          <!-- <div>day.date: {{ day.date }}</div> -->
+          <a v-for="(meetup, meetupIndex) in filterMeetupsByDate(day.date)" :key="meetupIndex" class="calendar-event">
+            {{ meetup.title }}
+          </a>
         </div>
-      </div> -->
+      </div>
     </div>
   </div>
 </template>
@@ -54,7 +51,7 @@ export default {
   },
 
   computed: {
-    titelData() {
+    titleData() {
       return this.date.toLocaleDateString(navigator.language, {
         month: 'long',
         year: 'numeric',
@@ -90,7 +87,8 @@ export default {
         const day = date.getUTCDate(); // получаем число (день месяца)
         days.push({
           day,
-          date: +date, // Преобразуем дату в милисекунды
+          // date: +date, // Преобразуем дату в милисекунды
+          date: +new Date(date),
           isCurrentMonth: true, // Флаг, указывающий, что день принадлежит текущему месяцу
         });
       }
@@ -99,7 +97,7 @@ export default {
       for (let i = 1; days.length % 7 !== 0; i++) {
         days.push({
           day: i,
-          date: null, 
+          date: null,
           isCurrentMonth: false,
         });
       }
@@ -125,9 +123,34 @@ export default {
       // если новый месяц имеет меньше дней, чем текущий,
       // то переносим дату на последний день нового месяца
       if (this.date.getUTCDate() > newDate.getUTCDate()) {
-        newDate.setUTCDate(15); 
+        newDate.setUTCDate(15);
       }
       this.date = newDate;
+    },
+    
+    filterMeetupsByDate(targetDate) {
+      if (!targetDate) {
+        return []; // Возвращаем пустой массив, если дата не определена
+      }
+
+      const currentYear = this.date.getUTCFullYear();
+      const currentMonth = this.date.getUTCMonth();
+      const dayNumber = targetDate.getUTCDate ? targetDate.getUTCDate() : null;
+
+      if (dayNumber === null) {
+        return []; // Возвращаем пустой массив, если день не определен
+      }
+
+      const filteredMeetups = this.meetups.filter((meetup) => {
+        const targetDateObject = new Date(meetup.date);
+        return (
+          targetDateObject.getUTCFullYear() === currentYear &&
+          targetDateObject.getUTCMonth() === currentMonth &&
+          targetDateObject.getUTCDate() === dayNumber
+        );
+      });
+
+      return filteredMeetups;
     },
   },
 };
