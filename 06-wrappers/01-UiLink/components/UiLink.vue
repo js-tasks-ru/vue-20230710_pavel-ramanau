@@ -1,5 +1,5 @@
 <template>
-  <component :is="tag" v-bind="$attrs" class="link">
+  <component :is="tag" class="link">
     <slot>Link!</slot>
   </component>
 </template>
@@ -7,7 +7,7 @@
 <script>
 export default {
   name: 'UiLink',
-  inheritAttrs: false,
+
   props: {
     tag: {
       type: [String, Object],

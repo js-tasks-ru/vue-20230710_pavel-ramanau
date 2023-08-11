@@ -1,5 +1,5 @@
 <template>
-  <component :is="tag" :type="isButton" v-bind="$attrs" :variant="variant" :class="[classes, isBlock]">
+  <component :is="tag" :type="isButton" :variant="variant" :class="[classes, isBlock]" class="button">
     <slot />
   </component>
 </template>
@@ -7,7 +7,6 @@
 <script>
 export default {
   name: 'UiButton',
-  inheritAttrs: false,
 
   props: {
     tag: {
@@ -27,17 +26,27 @@ export default {
 
   computed: {
     classes() {
-      if (this.variant === 'primary') {
-        return 'button button_primary';
-      } else if (this.variant === 'secondary') {
-        return 'button button_secondary';
-      } else return 'button button_danger';
+      const classMappings = {
+        primary: 'button_primary',
+        secondary: 'button_secondary',
+        danger: 'button_danger',
+      };
+      return classMappings[this.variant];
     },
     isBlock() {
-      return this.block ? 'button_block' : '';
+      const isThisBlock = {
+        true: 'button_block',
+        false: '',
+      };
+      return isThisBlock[this.block];
     },
     isButton() {
-      return this.tag === 'button' ? 'button' : null;
+      const buttonTypes = {
+        button: 'button',
+        submit: 'submit',
+        reset: 'reset',
+      };
+      return buttonTypes[this.tag];
     },
   },
 };
