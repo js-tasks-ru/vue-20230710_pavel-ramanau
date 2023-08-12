@@ -2,9 +2,11 @@
   <div
     class="input-group"
     :class="[
-      'input-group_icon',
-      { ['input-group_icon-left']: $slots['left-icon'] },
-      { 'input-group_icon-right': $slots['right-icon'] },
+      { 'input-group_icon': $slots['left-icon'] || $slots['right-icon'] },
+      {
+        'input-group_icon-left': $slots['left-icon'],
+        'input-group_icon-right': $slots['right-icon'],
+      },
     ]"
   >
     <div class="input-group__icon" v-if="$slots['left-icon']">
@@ -15,15 +17,17 @@
       :is="typeTag"
       ref="input"
       class="form-control"
-      :class="[isSmall, isRounded, isMultiLine]"
+      :class="{
+        'form-control_sm': small,
+        'form-control_rounded': rounded,
+        textarea: multiline,
+      }"
       v-bind="$attrs"
-      v-model="localValue"
-      @input="$emit('update:modelValue', $event.target.value)"
       :value="localValue"
-      @update:modelValue="localValue = $event"
+      @input="updateValue"
     >
     </component>
-    
+
     <div class="input-group__icon" v-if="$slots['right-icon']">
       <slot name="right-icon" />
     </div>
@@ -57,7 +61,7 @@ export default {
     },
     value: {
       type: String,
-      default: 'value',
+      // default: "value",
     },
   },
 
@@ -68,42 +72,17 @@ export default {
       deep: true,
       immediate: true,
       handler(newValue) {
-        if (newValue !== this.localValue) {
-          this.localValue = newValue;
-        }
+        this.localValue = newValue;
       },
     },
     localValue: {
-      deep: true,
       handler(newValue) {
         this.$emit("update:modelValue", newValue);
       },
     },
-
   },
 
   computed: {
-    isSmall() {
-      const isThisSmall = {
-        true: "form-control_sm",
-        false: "",
-      };
-      return isThisSmall[this.small];
-    },
-    isRounded() {
-      const isThisRounded = {
-        true: "form-control_rounded",
-        false: "",
-      };
-      return isThisRounded[this.rounded];
-    },
-    isMultiLine() {
-      const isThisMultiLine = {
-        true: "textarea",
-        false: "",
-      };
-      return isThisMultiLine[this.multiline];
-    },
     typeTag() {
       return this.multiline ? "textarea" : "input";
     },
@@ -113,6 +92,10 @@ export default {
     focus() {
       this.$refs.input.focus();
     },
+    updateValue(event) {
+    this.localValue = event.target.value;
+    this.$emit("update:modelValue", this.localValue);
+  },
   },
 };
 </script>

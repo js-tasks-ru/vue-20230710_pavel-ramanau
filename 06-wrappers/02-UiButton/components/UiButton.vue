@@ -1,5 +1,5 @@
 <template>
-  <component :is="tag" :type="isButton" :variant="variant" :class="[classes, isBlock]" class="button">
+  <component :is="tag" :type="isButton" :variant="variant" :class="[classes, {'button_block':block}]" class="button">
     <slot />
   </component>
 </template>
@@ -32,13 +32,6 @@ export default {
         danger: 'button_danger',
       };
       return classMappings[this.variant];
-    },
-    isBlock() {
-      const isThisBlock = {
-        true: 'button_block',
-        false: '',
-      };
-      return isThisBlock[this.block];
     },
     isButton() {
       const buttonTypes = {
