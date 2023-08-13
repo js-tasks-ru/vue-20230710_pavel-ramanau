@@ -9,7 +9,12 @@
           @click="previousMonth"
         ></button>
         <div class="calendar-view__date">{{ titleData }}</div>
-        <button class="calendar-view__control-right" type="button" aria-label="Next month" @click="nextMonth"></button>
+        <button
+          class="calendar-view__control-right"
+          type="button"
+          aria-label="Next month"
+          @click="nextMonth"
+        ></button>
       </div>
     </div>
 
@@ -24,7 +29,11 @@
         <div class="calendar-view__cell-day">{{ day.day }}</div>
         <div class="calendar-view__cell-content">
           <!-- <div>day.date: {{ day.date }}</div> -->
-          <a v-for="(meetup, meetupIndex) in filterMeetupsByDate(day.date)" :key="meetupIndex" class="calendar-event">
+          <a
+            v-for="(meetup, meetupIndex) in filterMeetupsByDate(day.date)"
+            :key="meetupIndex"
+            class="calendar-event"
+          >
             {{ meetup.title }}
           </a>
         </div>
@@ -35,7 +44,7 @@
 
 <script>
 export default {
-  name: 'MeetupsCalendar',
+  name: "MeetupsCalendar",
 
   data() {
     return {
@@ -53,8 +62,8 @@ export default {
   computed: {
     titleData() {
       return this.date.toLocaleDateString(navigator.language, {
-        month: 'long',
-        year: 'numeric',
+        month: "long",
+        year: "numeric",
       });
     },
     //формирует дни текущего месяца
@@ -65,11 +74,14 @@ export default {
       const firstDay = new Date(Date.UTC(currentYear, currentMonth, 1)); // Первый день текущего месяца (год, месяц, номер дня)
       const lastDay = new Date(Date.UTC(currentYear, currentMonth + 1, 0)); // Последний день текущего месяца.
 
-      const startDayOfWeek = firstDay.getUTCDay(); // 0 - вс, 1 - пн... день недели, с которого начинается неделя
+      const startDayOfWeek = (firstDay.getUTCDay() - 1 + 7) % 7; // 0 - вс, 1 - пн... день недели, с которого начинается неделя
+      //должен быть на 1 меньше, но при этом Воскресение должно быть 6 (а не -1). Поэтому мы добавляем 7 и берем остаток от деления на 7.
 
       // количество дней в предыдущем месяце
       // .getUTCDate() извлекает день месяца из объекта Date. это число будет количеством дней в предыдущем месяце.
-      const daysInPrevMonth = new Date(Date.UTC(currentYear, currentMonth, 0)).getUTCDate();
+      const daysInPrevMonth = new Date(
+        Date.UTC(currentYear, currentMonth, 0)
+      ).getUTCDate();
 
       let days = [];
 
@@ -109,25 +121,18 @@ export default {
   methods: {
     nextMonth() {
       const newDate = new Date(this.date);
+      newDate.setUTCDate(15); // Устанавливаем безопасную дату перед изменением месяца
       newDate.setUTCMonth(newDate.getUTCMonth() + 1);
-      // если новый месяц имеет меньше дней, чем текущий,
-      // то переносим дату на последний день нового месяца
-      if (this.date.getUTCDate() > newDate.getUTCDate()) {
-        newDate.setUTCDate(15); //число 15, чтобы избежать проблем
-      }
       this.date = newDate;
     },
+
     previousMonth() {
       const newDate = new Date(this.date);
+      newDate.setUTCDate(15); 
       newDate.setUTCMonth(newDate.getUTCMonth() - 1);
-      // если новый месяц имеет меньше дней, чем текущий,
-      // то переносим дату на последний день нового месяца
-      if (this.date.getUTCDate() > newDate.getUTCDate()) {
-        newDate.setUTCDate(15);
-      }
       this.date = newDate;
     },
-    
+
     filterMeetupsByDate(targetDate) {
       if (!targetDate) {
         return []; // Возвращаем пустой массив, если дата не определена
@@ -135,18 +140,19 @@ export default {
 
       const currentYear = this.date.getUTCFullYear();
       const currentMonth = this.date.getUTCMonth();
-      const dayNumber = targetDate.getUTCDate ? targetDate.getUTCDate() : null;
+      const targetDateObject = new Date(targetDate); // Преобразуем targetDate в объект типа Date
+      const dayNumber = targetDateObject.getUTCDate();
 
-      if (dayNumber === null) {
+      if (isNaN(dayNumber)) {
         return []; // Возвращаем пустой массив, если день не определен
       }
 
       const filteredMeetups = this.meetups.filter((meetup) => {
-        const targetDateObject = new Date(meetup.date);
+        const meetupDate = new Date(meetup.date);
         return (
-          targetDateObject.getUTCFullYear() === currentYear &&
-          targetDateObject.getUTCMonth() === currentMonth &&
-          targetDateObject.getUTCDate() === dayNumber
+          meetupDate.getUTCFullYear() === currentYear &&
+          meetupDate.getUTCMonth() === currentMonth &&
+          meetupDate.getUTCDate() === dayNumber
         );
       });
 
@@ -196,7 +202,7 @@ export default {
   justify-content: center;
   cursor: pointer;
   transition: 0.3s all;
-  background: url('@/assets/icons/icon-pill-active.svg') left center no-repeat;
+  background: url("@/assets/icons/icon-pill-active.svg") left center no-repeat;
   background-size: cover;
 }
 
