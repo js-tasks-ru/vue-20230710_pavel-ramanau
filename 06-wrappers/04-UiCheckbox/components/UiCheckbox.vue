@@ -5,6 +5,7 @@
       class="checkbox__input"
       v-bind="$attrs"
       v-model="isChecked"
+      :name="name"
     />
     <span class="checkbox__box"></span>
     <slot />
@@ -22,7 +23,7 @@ export default {
     name: String,
   },
 
-  emits: ['input'],
+  emits: ['update:modelValue'],
 
   computed: {
     isChecked: {
@@ -30,7 +31,7 @@ export default {
         return this.modelValue;
       },
       set(value) { //генерирует событие input для передачи нового значения наружу
-        this.$emit('input', value);
+        this.$emit('update:modelValue', value);
       },
     },
   },
