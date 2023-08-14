@@ -5,7 +5,6 @@
       class="checkbox__input"
       v-bind="$attrs"
       v-model="isChecked"
-      :name="name"
     />
     <span class="checkbox__box"></span>
     <slot />
@@ -20,7 +19,6 @@ export default {
 
   props: {
     modelValue: [Boolean, String, Array, Set], //пропс для значения чекбокса
-    name: String,
   },
 
   emits: ['update:modelValue'],
