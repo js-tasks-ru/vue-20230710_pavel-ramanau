@@ -1,20 +1,77 @@
 <template>
-  <div class="input-group input-group_icon input-group_icon-left input-group_icon-right">
-    <div class="input-group__icon">
-      <img class="icon" alt="icon" />
+  <div
+    class="input-group"
+    :class="{
+      'input-group_icon': $slots['left-icon'] || $slots['right-icon'],
+      'input-group_icon-left': $slots['left-icon'],
+      'input-group_icon-right': $slots['right-icon'],
+    }"
+  >
+    <div class="input-group__icon" v-if="$slots['left-icon']">
+      <slot name="left-icon" />
     </div>
 
-    <input ref="input" class="form-control form-control_rounded form-control_sm" />
+    <component
+      :is="typeTag"
+      ref="input"
+      class="form-control"
+      :class="{
+        'form-control_sm': small,
+        'form-control_rounded': rounded,
+      }"
+      :value="modelValue"
+      @input="updateValue"
+      v-bind="$attrs"
+    >
+    </component>
 
-    <div class="input-group__icon">
-      <img class="icon" alt="icon" />
+    <div class="input-group__icon" v-if="$slots['right-icon']">
+      <slot name="right-icon" />
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'UiInput',
+  name: "UiInput",
+
+  inheritAttrs: false,
+
+  props: {
+    small: {
+      type: Boolean,
+      default: false,
+    },
+    rounded: {
+      type: Boolean,
+      default: false,
+    },
+    multiline: {
+      type: Boolean,
+      default: false,
+    },
+    modelValue: {
+      type: String,
+      default: "value",
+    },
+  },
+
+  emits: ["update:modelValue"],
+
+  computed: {
+    typeTag() {
+      return this.multiline ? "textarea" : "input";
+    },
+  },
+
+  methods: {
+    focus() {
+      this.$refs.input.focus();
+    },
+    updateValue(event) {
+      this.$emit("update:modelValue", event.target.value);
+    },
+  },
 };
 </script>
 
@@ -24,7 +81,7 @@ export default {
   height: 52px;
   border-radius: 8px;
   border: 2px solid var(--blue-light);
-  font-family: 'Nunito', sans-serif;
+  font-family: "Nunito", sans-serif;
   font-weight: 600;
   font-size: 20px;
   line-height: 28px;

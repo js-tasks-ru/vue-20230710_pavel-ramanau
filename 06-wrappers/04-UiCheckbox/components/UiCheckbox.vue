@@ -1,14 +1,44 @@
 <template>
   <label class="checkbox">
-    <input type="checkbox" class="checkbox__input" />
+    <input
+      type="checkbox"
+      class="checkbox__input"
+      v-bind="$attrs"
+      v-model="isChecked"
+    />
     <span class="checkbox__box"></span>
-    Label Text
+    <slot />
   </label>
 </template>
 
 <script>
 export default {
-  name: 'UiCheckbox',
+  name: "UiCheckbox",
+
+  inheritAttrs: false, //отключение наследования атрибутов для <label>
+
+  props: {
+    modelValue: [Boolean, String, Array, Set], //пропс для значения чекбокса
+  },
+
+  emits: ['update:modelValue'],
+
+  computed: {
+    isChecked: {
+      get() {
+        return this.modelValue;
+      },
+      set(value) { //генерирует событие input для передачи нового значения наружу
+        this.$emit('update:modelValue', value);
+      },
+    },
+  },
+
+  methods: {
+    handleChange(event) {
+      this.isChecked = event.target.checked;
+    },
+  },
 };
 </script>
 
@@ -53,14 +83,14 @@ export default {
 }
 
 .checkbox > .checkbox__box:after {
-  content: '';
+  content: "";
   position: absolute;
   display: none;
   top: 50%;
   left: 50%;
   width: 14px;
   height: 13px;
-  background-image: url('@/assets/icons/icon-check.svg');
+  background-image: url("@/assets/icons/icon-check.svg");
   border: none;
   transform: translate(-50%, -50%);
 }

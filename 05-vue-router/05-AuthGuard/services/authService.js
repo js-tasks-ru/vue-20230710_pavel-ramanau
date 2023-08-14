@@ -8,7 +8,7 @@ let isLoggedIn = false;
  * Авторизован ли текущий пользователь
  * @return {boolean}
  */
-export function isAuthenticated() {
+export function isAuthenticated() { // возвращает true, если пользователь авторизован, и false, если нет
   return isLoggedIn;
 }
 

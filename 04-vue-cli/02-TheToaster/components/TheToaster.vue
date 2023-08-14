@@ -1,24 +1,56 @@
 <template>
   <div class="toasts">
-    <div class="toast toast_success">
-      <UiIcon class="toast__icon" icon="check-circle" />
-      <span>Success Toast Example</span>
-    </div>
-
-    <div class="toast toast_error">
-      <UiIcon class="toast__icon" icon="alert-circle" />
-      <span>Error Toast Example</span>
-    </div>
+    <UiToasts :messages="messages" @close-toast="handleCloseToast" />
   </div>
 </template>
 
 <script>
 import UiIcon from './UiIcon.vue';
+import UiToasts from './UiToasts.vue';
+import { ToastType } from '../constants/constants.js';
+import { ToastIconMap } from './UiToasts.vue';
 
 export default {
   name: 'TheToaster',
 
-  components: { UiIcon },
+  components: { UiIcon, UiToasts },
+
+  data() {
+    return {
+      messages: [], //Сохраняем сообщения в общий массивв сообщений
+    };
+  },
+
+  methods: {
+    addToast(type, message) {
+    // Добавляем новый тост в массив сообщений напрямую.
+    const toast = {
+      type,
+      message,
+      icon: ToastIconMap[type],
+    };
+
+    this.messages.push(toast);
+
+    setTimeout(() => {
+      const index = this.messages.indexOf(toast);
+      if (index !== -1) {
+        this.messages.splice(index, 1);
+      }
+    }, 5000);
+  },
+
+    success(message) {
+      this.addToast(ToastType.SUCCESS, message);
+    },
+    error(message) {
+      this.addToast(ToastType.ERROR, message);
+    },
+    handleCloseToast(index) {
+      // обновляем массив сообщений, чтобы удалить закрытый тост
+      this.messages.splice(index, 1);
+    },
+  },
 };
 </script>
 
@@ -39,35 +71,5 @@ export default {
     bottom: 72px;
     right: 112px;
   }
-}
-
-.toast {
-  display: flex;
-  flex: 0 0 auto;
-  flex-direction: row;
-  align-items: center;
-  padding: 16px;
-  background: #ffffff;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-  border-radius: 4px;
-  font-size: 18px;
-  line-height: 28px;
-  width: auto;
-}
-
-.toast + .toast {
-  margin-top: 20px;
-}
-
-.toast__icon {
-  margin-right: 12px;
-}
-
-.toast.toast_success {
-  color: var(--green);
-}
-
-.toast.toast_error {
-  color: var(--red);
 }
 </style>

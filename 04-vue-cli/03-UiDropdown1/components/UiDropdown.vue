@@ -1,20 +1,30 @@
 <template>
-  <div class="dropdown dropdown_opened">
-    <button type="button" class="dropdown__toggle dropdown__toggle_icon">
-      <UiIcon icon="tv" class="dropdown__icon" />
-      <span>Title</span>
+  <div class="dropdown" :class="{ dropdown_opened: isDropdownOpen }">
+    <button type="button" class="dropdown__toggle" :class="{ dropdown__toggle_icon: isIcon }" @click="toggleDropdown">
+      <span v-if="selectedOption">
+        <UiIcon v-if="isIcon && selectedOption.icon" :icon="selectedOption.icon" class="dropdown__icon" />
+        {{ selectedOption.text }}
+      </span>
+      <span v-else>{{ title }}</span>
     </button>
-
-    <div class="dropdown__menu" role="listbox">
-      <button class="dropdown__item dropdown__item_icon" role="option" type="button">
-        <UiIcon icon="tv" class="dropdown__icon" />
-        Option 1
-      </button>
-      <button class="dropdown__item dropdown__item_icon" role="option" type="button">
-        <UiIcon icon="tv" class="dropdown__icon" />
-        Option 2
+    <div class="dropdown__menu" role="listbox"  v-show="isDropdownOpen">
+      <button
+        v-for="(option, index) in options"
+        :key="index"
+        class="dropdown__item"
+        :class="{ dropdown__item_icon: isIcon }"
+        role="option"
+        type="button"
+        @click="selectOption(option)"
+      >
+        <UiIcon v-if="isIcon && option.icon" :icon="option.icon" class="dropdown__icon" />
+        {{ option.text }}
       </button>
     </div>
+    <!-- Новый скрытый элемент <select> -->
+      <select ref="select" :value="modelValue" @change="handleSelectChange" style="display: none">
+        <option v-for="option in options" :key="option.value" :value="option.value">{{ option.text }}</option>
+      </select>
   </div>
 </template>
 
@@ -25,9 +35,59 @@ export default {
   name: 'UiDropdown',
 
   components: { UiIcon },
+
+  props: {
+    options: {
+      type: Array,
+      required: true,
+    },
+    modelValue: {
+      type: String,
+      default: null,
+    },
+    title: {
+      type: String,
+      required: true,
+    },
+  },
+
+  data() {
+    return {
+      isDropdownOpen: false, // открыт ли список вариантов
+    };
+  },
+  // метод some возвращает true, если хотя бы для одного элемента массива условие возвращается true и добавит класс
+  computed: {
+    isIcon() {
+      return this.options.some((option) => option.icon !== undefined);
+    },
+    selectedOption() {
+    return this.options.find((option) => option.value === this.modelValue) || null;
+  },
+  },
+
+  // для обновления selectedOption, когда значение modelValue меняется извне
+  watch: {
+    modelValue(){},
+  },
+
+  methods: {
+    //открыть или закрыть список вариантов
+    toggleDropdown() {
+      this.isDropdownOpen = !this.isDropdownOpen;
+    },
+    //вызывается при выборе одного из вариантов
+    selectOption(option) {
+
+      this.isDropdownOpen = false; //закрывает список
+      this.$emit('update:modelValue', option.value); //событие обновления значения
+    },
+    handleSelectChange(event) {
+      this.$emit('update:modelValue', event.target.value);
+    },
+  },
 };
 </script>
-
 <style scoped>
 .dropdown {
   position: relative;
