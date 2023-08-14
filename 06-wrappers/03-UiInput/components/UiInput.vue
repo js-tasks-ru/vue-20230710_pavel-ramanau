@@ -1,13 +1,11 @@
 <template>
   <div
     class="input-group"
-    :class="[
-      { 'input-group_icon': $slots['left-icon'] || $slots['right-icon'] },
-      {
-        'input-group_icon-left': $slots['left-icon'],
-        'input-group_icon-right': $slots['right-icon'],
-      },
-    ]"
+    :class="{
+      'input-group_icon': $slots['left-icon'] || $slots['right-icon'],
+      'input-group_icon-left': $slots['left-icon'],
+      'input-group_icon-right': $slots['right-icon'],
+    }"
   >
     <div class="input-group__icon" v-if="$slots['left-icon']">
       <slot name="left-icon" />
@@ -20,11 +18,10 @@
       :class="{
         'form-control_sm': small,
         'form-control_rounded': rounded,
-        textarea: multiline,
       }"
-      v-bind="$attrs"
-      :value="localValue"
+      :value="modelValue"
       @input="updateValue"
+      v-bind="$attrs"
     >
     </component>
 
@@ -40,12 +37,6 @@ export default {
 
   inheritAttrs: false,
 
-  data() {
-    return {
-      localValue: this.value,
-    };
-  },
-
   props: {
     small: {
       type: Boolean,
@@ -59,28 +50,13 @@ export default {
       type: Boolean,
       default: false,
     },
-    value: {
+    modelValue: {
       type: String,
-      // default: "value",
+      default: "value",
     },
   },
 
   emits: ["update:modelValue"],
-
-  watch: {
-    value: {
-      deep: true,
-      immediate: true,
-      handler(newValue) {
-        this.localValue = newValue;
-      },
-    },
-    localValue: {
-      handler(newValue) {
-        this.$emit("update:modelValue", newValue);
-      },
-    },
-  },
 
   computed: {
     typeTag() {
@@ -93,9 +69,8 @@ export default {
       this.$refs.input.focus();
     },
     updateValue(event) {
-    this.localValue = event.target.value;
-    this.$emit("update:modelValue", this.localValue);
-  },
+      this.$emit("update:modelValue", event.target.value);
+    },
   },
 };
 </script>
