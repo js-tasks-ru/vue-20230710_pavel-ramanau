@@ -8,7 +8,7 @@ export default {
 
   data() {
     return {
-      internalCount: this.count !== undefined ? this.count : 0,
+      internalCount: this.count,
     };
   },
 
