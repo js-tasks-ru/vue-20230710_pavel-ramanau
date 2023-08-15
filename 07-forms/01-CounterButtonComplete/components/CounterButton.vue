@@ -1,10 +1,16 @@
 <template>
-  <button @click="increment">{{ count }}</button>
+  <button @click="increment">{{ internalCount }}</button>
 </template>
 
 <script>
 export default {
   name: 'CounterButton',
+
+  data() {
+    return {
+      internalCount: this.count !== undefined ? this.count : 0,
+    };
+  },
 
   props: {
     count: {
@@ -13,9 +19,18 @@ export default {
     },
   },
 
+  watch: {
+    count(newVal) {
+      this.internalCount = newVal;
+    },
+  },
+
   methods: {
     increment() {
-      this.$emit('update:count', this.count + 1);
+      this.internalCount++;
+      if (this.count !== undefined) {
+        this.$emit('update:count', this.internalCount);
+      }
     },
   },
 
