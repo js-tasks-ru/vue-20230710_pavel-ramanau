@@ -89,6 +89,7 @@ import UiInputDate from "./UiInputDate.vue";
 // import { createAgendaItem } from '../meetupService.js';
 // import { isEqual } from "lodash";
 import { createAgendaItem } from "../meetupService.js";
+import { cloneDeep } from 'lodash';
 
 export default {
   name: "MeetupForm",
@@ -104,7 +105,7 @@ export default {
 
   data() {
     return {
-      localMeetup: { ...this.meetup },
+      localMeetup: cloneDeep(this.meetup),
     };
   },
 
@@ -130,9 +131,17 @@ export default {
     handleSubmit() {
       this.$emit("submit", this.localMeetup);
     },
-    addProgramStep(){ // не проходит тест на мутацию...
-      const newItem = createAgendaItem(); // функция createAgendaItem из meetupService.js
-      this.localMeetup.agenda.push(newItem);
+    addProgramStep(){ 
+      if (this.localMeetup.agenda.length > 0) {
+        const lastAgendaItem = this.localMeetup.agenda[this.localMeetup.agenda.length - 1];
+        const endTime = lastAgendaItem.endsAt;
+        const newItem = createAgendaItem(); // функция createAgendaItem из meetupService.js
+        newItem.startsAt = endTime;
+        this.localMeetup.agenda.push(newItem);
+      } else {
+        const newItem = createAgendaItem();
+        this.localMeetup.agenda.push(newItem);
+      }
     },
     removeAgendaItem(index){
       this.localMeetup.agenda.splice(index, 1);
