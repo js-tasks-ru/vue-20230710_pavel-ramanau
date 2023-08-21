@@ -6,7 +6,7 @@
           <UiInput name="title" v-model="localMeetup.title" />
         </UiFormGroup>
         <UiFormGroup label="Дата">
-          <UiInputDate type="date" name="date" v-model="localMeetup.date"  />
+          <UiInputDate type="date" name="date" v-model="localMeetup.date" />
         </UiFormGroup>
         <UiFormGroup label="Место">
           <UiInput name="place" v-model="localMeetup.place" />
@@ -35,13 +35,14 @@
 
       <h3 class="meetup-form__agenda-title">Программа</h3>
       <div v-for="(agendaItem, index) in localMeetup.agenda" :key="agendaItem.id">
-      <MeetupAgendaItemForm
-        :agenda-item="agendaItem"
-        @remove="removeAgendaItem(index)"
-        class="meetup-form__agenda-item"
-      />
-    </div>
-    
+        <MeetupAgendaItemForm
+          v-model="localMeetup.agenda[index]"
+          :agenda-item="agendaItem"
+          @remove="removeAgendaItem(index)"
+          class="meetup-form__agenda-item"
+        />
+      </div>
+
       <div class="meetup-form__append">
         <button
           class="meetup-form__append-button"
@@ -89,7 +90,7 @@ import UiInputDate from "./UiInputDate.vue";
 // import { createAgendaItem } from '../meetupService.js';
 // import { isEqual } from "lodash";
 import { createAgendaItem } from "../meetupService.js";
-import { cloneDeep } from 'lodash';
+import { cloneDeep } from "lodash";
 
 export default {
   name: "MeetupForm",
@@ -131,9 +132,11 @@ export default {
     handleSubmit() {
       this.$emit("submit", cloneDeep(this.localMeetup));
     },
-    addProgramStep(){ 
+    addProgramStep() {
       if (this.localMeetup.agenda.length > 0) {
-        const lastAgendaItem = this.localMeetup.agenda[this.localMeetup.agenda.length - 1];
+        const lastAgendaItem = this.localMeetup.agenda[
+          this.localMeetup.agenda.length - 1
+        ];
         const endTime = lastAgendaItem.endsAt;
         const newItem = createAgendaItem(); // функция createAgendaItem из meetupService.js
         newItem.startsAt = endTime;
@@ -143,9 +146,9 @@ export default {
         this.localMeetup.agenda.push(newItem);
       }
     },
-    removeAgendaItem(index){
+    removeAgendaItem(index) {
       this.localMeetup.agenda.splice(index, 1);
-    }
+    },
   },
 };
 </script>
