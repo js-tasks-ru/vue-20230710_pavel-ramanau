@@ -36,8 +36,7 @@
       <h3 class="meetup-form__agenda-title">Программа</h3>
       <div v-for="(agendaItem, index) in localMeetup.agenda" :key="agendaItem.id">
         <MeetupAgendaItemForm
-          v-model="localMeetup.agenda[index]"
-          :agenda-item="agendaItem"
+          :agenda-item="agendaItemAtIndex(index)"
           @remove="removeAgendaItem(index)"
           class="meetup-form__agenda-item"
         />
@@ -123,6 +122,12 @@ export default {
   },
 
   emits: ["submit", "cancel"],
+
+  computed: {
+    agendaItemAtIndex() {
+      return (index) => this.localMeetup.agenda[index];
+    },
+  },
 
   methods: {
     handleCancel() {
