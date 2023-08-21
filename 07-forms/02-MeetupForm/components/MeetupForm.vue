@@ -125,11 +125,11 @@ export default {
 
   methods: {
     handleCancel() {
-      this.localMeetup = { ...this.meetup };
+      this.localMeetup = cloneDeep(this.meetup);
       this.$emit("cancel");
     },
     handleSubmit() {
-      this.$emit("submit", this.localMeetup);
+      this.$emit("submit", cloneDeep(this.localMeetup));
     },
     addProgramStep(){ 
       if (this.localMeetup.agenda.length > 0) {
