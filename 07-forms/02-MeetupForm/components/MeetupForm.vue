@@ -36,7 +36,7 @@
       <h3 class="meetup-form__agenda-title">Программа</h3>
       <div v-for="(agendaItem, index) in localMeetup.agenda" :key="agendaItem.id">
         <MeetupAgendaItemForm
-          :agenda-item="agendaItemAtIndex(index)"
+          v-model:agenda-item="localMeetup.agenda[index]"
           @remove="removeAgendaItem(index)"
           class="meetup-form__agenda-item"
         />
