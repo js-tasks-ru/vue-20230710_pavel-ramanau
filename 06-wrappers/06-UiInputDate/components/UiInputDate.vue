@@ -56,18 +56,8 @@ export default {
     updateModelValue(event) {
       const newValue = event.target.valueAsNumber;
 
-      if (newValue === "") {
+      if (isNaN(newValue)) {
         this.$emit("update:modelValue", null);
-      } else if (this.type === "date" && newValue !== null && newValue !== undefined) {
-        this.$emit("update:modelValue", Date.parse(newValue));
-      } else if (this.type === "time" && newValue !== null && newValue !== undefined) {
-        this.$emit("update:modelValue", Date.parse(`1970-01-01T${newValue}`));
-      } else if (
-        this.type === "datetime-local" &&
-        newValue !== null &&
-        newValue !== undefined
-      ) {
-        this.$emit("update:modelValue", Date.parse()); //Без указания часового пояса в Date.parse он работает в локальном
       } else {
         this.$emit("update:modelValue", newValue);
       }
