@@ -54,7 +54,7 @@ export default {
 
   methods: {
     updateModelValue(event) {
-      const newValue = event.target.value;
+      const newValue = event.target.valueAsNumber;
 
       if (newValue === "") {
         this.$emit("update:modelValue", null);
@@ -67,7 +67,7 @@ export default {
         newValue !== null &&
         newValue !== undefined
       ) {
-        this.$emit("update:modelValue", Date.parse(newValue));
+        this.$emit("update:modelValue", Date.parse()); //Без указания часового пояса в Date.parse он работает в локальном
       } else {
         this.$emit("update:modelValue", newValue);
       }
