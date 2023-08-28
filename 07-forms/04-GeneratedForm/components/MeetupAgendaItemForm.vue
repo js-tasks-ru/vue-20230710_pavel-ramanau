@@ -1,73 +1,98 @@
 <template>
   <fieldset class="agenda-item-form">
-    <button type="button" class="agenda-item-form__remove-button">
+    <button type="button" class="agenda-item-form__remove-button" @click="remove">
       <UiIcon icon="trash" />
     </button>
 
     <UiFormGroup>
-      <UiDropdown title="Тип" :options="$options.agendaItemTypeOptions" name="type" />
+      <UiDropdown
+        title="Тип"
+        :options="$options.agendaItemTypeOptions"
+        name="type"
+        v-model="localAgendaItem.type"
+      />
     </UiFormGroup>
 
     <div class="agenda-item-form__row">
       <div class="agenda-item-form__col">
         <UiFormGroup label="Начало">
-          <UiInput type="time" placeholder="00:00" name="startsAt" />
+          <UiInput
+            type="time"
+            placeholder="00:00"
+            name="startsAt"
+            v-model="localAgendaItem.startsAt"
+          />
         </UiFormGroup>
       </div>
       <div class="agenda-item-form__col">
         <UiFormGroup label="Окончание">
-          <UiInput type="time" placeholder="00:00" name="endsAt" />
+          <UiInput
+            type="time"
+            placeholder="00:00"
+            name="endsAt"
+            v-model="localAgendaItem.endsAt"
+          />
         </UiFormGroup>
       </div>
     </div>
 
-    <UiFormGroup label="Заголовок">
-      <UiInput name="title" />
-    </UiFormGroup>
-    <UiFormGroup label="Описание">
-      <UiInput multiline name="description" />
-    </UiFormGroup>
+    <template v-if="agendaItem.type">
+      <template
+        v-for="(schema, index) in agendaItemFormSchemas[agendaItem.type]"
+        :key="index"
+      >
+        <UiFormGroup :label="schema.label">
+          <component
+            :is="schema.component"
+            v-bind="schema.props"
+            v-model="localAgendaItem[schema.props.name]"
+          />
+        </UiFormGroup>
+      </template>
+    </template>
   </fieldset>
 </template>
 
 <script>
-import UiIcon from './UiIcon.vue';
-import UiFormGroup from './UiFormGroup.vue';
-import UiInput from './UiInput.vue';
-import UiDropdown from './UiDropdown.vue';
+import UiIcon from "./UiIcon.vue";
+import UiFormGroup from "./UiFormGroup.vue";
+import UiInput from "./UiInput.vue";
+import UiDropdown from "./UiDropdown.vue";
 
 const agendaItemTypeIcons = {
-  registration: 'key',
-  opening: 'cal-sm',
-  talk: 'tv',
-  break: 'clock',
-  coffee: 'coffee',
-  closing: 'key',
-  afterparty: 'cal-sm',
-  other: 'cal-sm',
+  registration: "key",
+  opening: "cal-sm",
+  talk: "tv",
+  break: "clock",
+  coffee: "coffee",
+  closing: "key",
+  afterparty: "cal-sm",
+  other: "cal-sm",
 };
 
 const agendaItemDefaultTitles = {
-  registration: 'Регистрация',
-  opening: 'Открытие',
-  break: 'Перерыв',
-  coffee: 'Coffee Break',
-  closing: 'Закрытие',
-  afterparty: 'Afterparty',
-  talk: 'Доклад',
-  other: 'Другое',
+  registration: "Регистрация",
+  opening: "Открытие",
+  break: "Перерыв",
+  coffee: "Coffee Break",
+  closing: "Закрытие",
+  afterparty: "Afterparty",
+  talk: "Доклад",
+  other: "Другое",
 };
 
-const agendaItemTypeOptions = Object.entries(agendaItemDefaultTitles).map(([type, title]) => ({
-  value: type,
-  text: title,
-  icon: agendaItemTypeIcons[type],
-}));
+const agendaItemTypeOptions = Object.entries(agendaItemDefaultTitles).map(
+  ([type, title]) => ({
+    value: type,
+    text: title,
+    icon: agendaItemTypeIcons[type],
+  })
+);
 
 const talkLanguageOptions = [
-  { value: null, text: 'Не указано' },
-  { value: 'RU', text: 'RU' },
-  { value: 'EN', text: 'EN' },
+  { value: null, text: "Не указано" },
+  { value: "RU", text: "RU" },
+  { value: "EN", text: "EN" },
 ];
 
 /**
@@ -83,10 +108,10 @@ const talkLanguageOptions = [
 /** @type FormSchema */
 const commonAgendaItemFormSchema = {
   title: {
-    label: 'Нестандартный текст (необязательно)',
-    component: 'ui-input',
+    label: "Нестандартный текст (необязательно)",
+    component: "ui-input",
     props: {
-      name: 'title',
+      name: "title",
     },
   },
 };
@@ -97,34 +122,34 @@ const agendaItemFormSchemas = {
   opening: commonAgendaItemFormSchema,
   talk: {
     title: {
-      label: 'Тема',
-      component: 'ui-input',
+      label: "Тема",
+      component: "ui-input",
       props: {
-        name: 'title',
+        name: "title",
       },
     },
     speaker: {
-      label: 'Докладчик',
-      component: 'ui-input',
+      label: "Докладчик",
+      component: "ui-input",
       props: {
-        name: 'speaker',
+        name: "speaker",
       },
     },
     description: {
-      label: 'Описание',
-      component: 'ui-input',
+      label: "Описание",
+      component: "ui-input",
       props: {
         multiline: true,
-        name: 'description',
+        name: "description",
       },
     },
     language: {
-      label: 'Язык',
-      component: 'ui-dropdown',
+      label: "Язык",
+      component: "ui-dropdown",
       props: {
         options: talkLanguageOptions,
-        title: 'Язык',
-        name: 'language',
+        title: "Язык",
+        name: "language",
       },
     },
   },
@@ -134,25 +159,25 @@ const agendaItemFormSchemas = {
   afterparty: commonAgendaItemFormSchema,
   other: {
     title: {
-      label: 'Заголовок',
-      component: 'ui-input',
+      label: "Заголовок",
+      component: "ui-input",
       props: {
-        name: 'title',
+        name: "title",
       },
     },
     description: {
-      label: 'Описание',
-      component: 'ui-input',
+      label: "Описание",
+      component: "ui-input",
       props: {
         multiline: true,
-        name: 'description',
+        name: "description",
       },
     },
   },
 };
 
 export default {
-  name: 'MeetupAgendaItemForm',
+  name: "MeetupAgendaItemForm",
 
   components: { UiIcon, UiFormGroup, UiInput, UiDropdown },
 
@@ -163,6 +188,63 @@ export default {
     agendaItem: {
       type: Object,
       required: true,
+    },
+  },
+
+  emits: ["remove", "update:agendaItem"],
+
+  data() {
+    return {
+      localAgendaItem: { ...this.agendaItem },
+    };
+  },
+
+  computed: {
+    agendaItemFormSchemas() {
+      return this.$options.agendaItemFormSchemas;
+    },
+  },
+
+  watch: {
+    agendaItem: {
+      immediate: true,
+      handler() {
+        this.localAgendaItem = { ...this.agendaItem };
+      },
+    },
+    localAgendaItem: {
+      deep: true,
+      handler() {
+        this.updateAgendaItem();
+      },
+    },
+
+    "localAgendaItem.startsAt": {
+      immediate: true,
+      handler(newStartsAt, oldStartsAt) {
+        if (newStartsAt && oldStartsAt) {
+          const newStartTime = new Date(`1970-01-01T${newStartsAt}:00.000Z`);
+          const oldStartTime = new Date(`1970-01-01T${oldStartsAt}:00.000Z`);
+          const timeDifference = newStartTime - oldStartTime;
+
+          const currentEndTime = new Date(
+            `1970-01-01T${this.localAgendaItem.endsAt}:00.000Z`
+          );
+          currentEndTime.setTime(currentEndTime.getTime() + timeDifference);
+
+          const newEndsAt = currentEndTime.toISOString().slice(11, 16);
+          this.localAgendaItem.endsAt = newEndsAt;
+        }
+      },
+    },
+  },
+  methods: {
+    remove() {
+      this.$emit("remove");
+    },
+
+    updateAgendaItem() {
+      this.$emit("update:agendaItem", { ...this.localAgendaItem });
     },
   },
 };
