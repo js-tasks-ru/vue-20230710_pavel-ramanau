@@ -30,7 +30,7 @@ export default {
     },
     step: {
       type: String,
-      default: "any",
+      default: undefined,
     },
   },
 
