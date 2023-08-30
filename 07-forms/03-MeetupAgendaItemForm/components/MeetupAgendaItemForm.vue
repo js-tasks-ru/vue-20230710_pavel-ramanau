@@ -158,6 +158,18 @@ export default {
     },
   },
 
+  computed: {
+    getLabel() {
+    if (this.localAgendaItem.type === "talk") {
+      return "Тема";
+    } else if (this.localAgendaItem.type === "other") {
+      return "Заголовок";
+    } else {
+      return "Нестандартный текст (необязательно)";
+    }
+  },
+  },
+
   methods: {
     remove() {
       this.$emit("remove");
@@ -165,16 +177,6 @@ export default {
 
     updateAgendaItem() {
       this.$emit("update:agendaItem", { ...this.localAgendaItem });
-    },
-
-    getLabel() {
-      if (this.localAgendaItem.type === "talk") {
-        return "Тема";
-      } else if (this.localAgendaItem.type === "other") {
-        return "Заголовок";
-      } else {
-        return "Нестандартный текст (необязательно)";
-      }
     },
   },
 };

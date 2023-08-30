@@ -35,20 +35,18 @@
         </UiFormGroup>
       </div>
     </div>
-
     <template v-if="agendaItem.type">
-      <template
+      <UiFormGroup
         v-for="(schema, index) in agendaItemFormSchemas[agendaItem.type]"
         :key="index"
+        :label="schema.label"
       >
-        <UiFormGroup :label="schema.label">
-          <component
-            :is="schema.component"
-            v-bind="schema.props"
-            v-model="localAgendaItem[schema.props.name]"
-          />
-        </UiFormGroup>
-      </template>
+        <component
+          :is="schema.component"
+          v-bind="schema.props"
+          v-model="localAgendaItem[schema.props.name]"
+        />
+      </UiFormGroup>
     </template>
   </fieldset>
 </template>
