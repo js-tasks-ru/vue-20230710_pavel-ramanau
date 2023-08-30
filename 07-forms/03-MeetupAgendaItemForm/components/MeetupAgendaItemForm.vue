@@ -36,7 +36,7 @@
       </div>
     </div>
 
-    <UiFormGroup :label="getLabel()">
+    <UiFormGroup :label="getLabel">
       <UiInput name="title" v-model="localAgendaItem.title" />
     </UiFormGroup>
     <UiFormGroup label="Докладчик" v-if="localAgendaItem.type === 'talk'">
