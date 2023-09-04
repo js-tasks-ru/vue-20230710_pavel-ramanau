@@ -1,13 +1,18 @@
 <template>
   <main class="mini-messenger">
-    <ul class="messages">
+    <ul class="messages" ref="messageList">
       <li v-for="message in messages" :key="message.id" class="message">
         {{ message.text }}
       </li>
     </ul>
     <form @submit.prevent="handleSendSubmit">
       <div class="input-group">
-        <input v-model="newMessage" type="text" class="form-control messenger__input" placeholder="New message" />
+        <input
+          v-model="newMessage"
+          type="text"
+          class="form-control messenger__input"
+          placeholder="New message"
+        />
       </div>
     </form>
   </main>
@@ -17,16 +22,16 @@
 let lastId = 0;
 
 export default {
-  name: 'MiniMessenger',
+  name: "MiniMessenger",
 
   data() {
     return {
-      newMessage: '',
+      newMessage: "",
       messages: [
-        { id: lastId++, text: 'First message' },
-        { id: lastId++, text: 'Second message' },
-        { id: lastId++, text: 'Third message' },
-        { id: lastId++, text: 'Forth message' },
+        { id: lastId++, text: "First message" },
+        { id: lastId++, text: "Second message" },
+        { id: lastId++, text: "Third message" },
+        { id: lastId++, text: "Forth message" },
       ],
     };
   },
@@ -41,7 +46,11 @@ export default {
         id: lastId++,
         text: this.newMessage,
       });
-      this.newMessage = '';
+      this.newMessage = "";
+      this.$nextTick(() => {     //this.$nextTick принимает функцию обратного вызова, которая будет выполнена после обновления DOM.
+        const messageList = this.$refs.messageList; // находит элемент списка
+        messageList.scrollTop = messageList.scrollHeight; // прокручивает вниз
+      });
     },
   },
 };

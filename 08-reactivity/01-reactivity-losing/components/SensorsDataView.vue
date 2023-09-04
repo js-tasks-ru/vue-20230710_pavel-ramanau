@@ -6,45 +6,49 @@
 </template>
 
 <script>
-import { SensorsDataController } from '../services/SensorsDataController';
-import { SensorsDataStreamingService } from '../services/SensorsDataStreamingService';
-import SensorsDataRow from './SensorsDataRow';
+import { SensorsDataController } from "../services/SensorsDataController";
+import { SensorsDataStreamingService } from "../services/SensorsDataStreamingService";
+import SensorsDataRow from "./SensorsDataRow";
+import cloneDeep from 'lodash/cloneDeep';
 
 export default {
-  name: 'SensorsDataView',
+  name: "SensorsDataView",
 
   components: { SensorsDataRow },
-
+ 
   data() {
     return {
       sensors: null,
     };
   },
 
-  mounted() {
-    this.sensorsDataController = new SensorsDataController(new SensorsDataStreamingService());
-    this.sensorsDataController.addDataCallback(this.callback);
+    mounted() {
+      this.sensorsDataController = new SensorsDataController(
+        new SensorsDataStreamingService()
+      );
+      this.sensorsDataController.addDataCallback(this.callback);
 
-    // Раз в секунду запрашиваем и выводим новые данные сенсоров
-    setInterval(() => {
-      this.sensorsDataController.getData();
-    }, 1000);
-  },
-
-  beforeUnmount() {
-    this.sensorsDataController.removeDataCallback(this.callback);
-    this.sensorsDataController.close();
-  },
-
-  methods: {
-    callback(data) {
-      this.setData(data);
+      // Раз в секунду запрашиваем и выводим новые данные сенсоров
+      setInterval(() => {
+        this.sensorsDataController.getData();
+      }, 1000);
     },
 
-    setData(sensors) {
-      this.sensors = sensors;
+    beforeUnmount() {
+      this.sensorsDataController.removeDataCallback(this.callback);
+      this.sensorsDataController.close();
     },
-  },
+    
+    methods: {    
+      callback(data) {
+        this.setData(data);
+      },
+
+      setData(sensors) {
+        this.sensors = cloneDeep(sensors);
+
+      },
+    },
 };
 </script>
 

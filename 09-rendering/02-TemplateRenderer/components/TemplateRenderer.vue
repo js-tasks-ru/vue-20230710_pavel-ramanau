@@ -22,9 +22,11 @@ export default {
   },
 
   computed: {
+
     renderFunction() {
       return compile(this.template);
     },
+
 
     componentFromTemplate() {
       return defineComponent({
