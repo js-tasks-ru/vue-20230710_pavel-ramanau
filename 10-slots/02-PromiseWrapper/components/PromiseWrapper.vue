@@ -25,6 +25,18 @@ export default {
     };
   },
 
+  mounted() {
+    this.promise
+      .then((result) => {
+        this.currentState = 'fulfilled';
+        this.result = result;
+      })
+      .catch((error) => {
+        this.currentState = 'rejected';
+        this.error = error;
+      });
+  },
+
   watch: {
     immediate: true,
     promise: {
