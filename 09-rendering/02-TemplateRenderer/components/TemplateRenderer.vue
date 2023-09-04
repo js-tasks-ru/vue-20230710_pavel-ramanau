@@ -27,6 +27,7 @@ export default {
       return compile(this.template);
     },
 
+
     componentFromTemplate() {
       return defineComponent({
         name: 'TemplateRendererInternal',
