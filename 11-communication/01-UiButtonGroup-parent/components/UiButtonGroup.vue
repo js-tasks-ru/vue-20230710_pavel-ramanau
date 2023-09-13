@@ -1,24 +1,37 @@
 <template>
   <div class="button-group" role="group">
-    <!-- Эти кнопки должны передаваться через слот -->
-    <button class="button-group__button button-group__button_active" type="button" aria-selected="true">Button1</button>
-    <button class="button-group__button" type="button" aria-selected="false">Button2</button>
-    <button class="button-group__button" type="button" aria-selected="false">Button3</button>
-    <!-- Эти кнопки должны передаваться через слот -->
+    <slot></slot>
   </div>
 </template>
 
 <script>
 export default {
   name: 'UiButtonGroup',
-
-  props: {
-    modelValue: {
-      required: true,
-    },
+emits: ['update:modelValue'],
+  data() {
+    return {
+      selectedValue: this.modelValue,
+    };
   },
 
-  emits: ['update:modelValue'],
+  watch: {
+    modelValue(newValue) {
+      this.selectedValue = newValue;
+    },
+    '$parent.selectedValue': {
+    immediate: true, 
+    handler(newValue) {
+      this.isActive = newValue === this.value;
+    },
+  },
+  },
+
+  methods: {
+    updateSelected(value) {
+      this.selectedValue = value;
+      this.$emit('update:modelValue', value);
+    },
+  },
 };
 </script>
 

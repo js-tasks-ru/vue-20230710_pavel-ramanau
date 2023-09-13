@@ -1,5 +1,13 @@
 <template>
-  <button class="button-group__button button-group__button_active" type="button" aria-selected="false">Button</button>
+  <button
+    class="button-group__button"
+    :class="{ 'button-group__button_active': isActive }"
+    type="button"
+    aria-selected="false"
+    @click="selectButton"
+  >
+    <slot></slot>
+  </button>
 </template>
 
 <script>
@@ -10,6 +18,26 @@ export default {
     value: {
       required: true,
     },
+  },
+
+  computed: {
+    isActive() {
+      return this.$parent.selectedValue === this.value;
+    },
+  },
+
+  methods: {
+    selectButton() {
+      if (this.isActive) return;
+
+      this.$parent.updateSelected(this.value);
+    },
+  },
+
+  created() {
+    if (this.$parent.$options.name !== 'UiButtonGroup') {
+      console.warn('UiButtonGroupItem должен использоваться только внутри UiButtonGroup');
+    }
   },
 };
 </script>
