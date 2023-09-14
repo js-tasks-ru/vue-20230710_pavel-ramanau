@@ -28,9 +28,7 @@ export default {
 
   methods: {
     selectButton() {
-      if (this.isActive) return;
-
-      this.$parent.updateSelected(this.value);
+        this.$parent.updateSelected(this.value);
     },
   },
 

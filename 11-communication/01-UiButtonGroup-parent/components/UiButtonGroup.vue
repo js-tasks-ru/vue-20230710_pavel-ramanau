@@ -23,12 +23,6 @@ export default {
     modelValue(newValue) {
       this.selectedValue = newValue;
     },
-    "$parent.selectedValue": {
-      immediate: true,
-      handler(newValue) {
-        this.isActive = newValue === this.value;
-      },
-    },
   },
 
   methods: {
