@@ -1,15 +1,44 @@
 <template>
-  <button class="button-group__button button-group__button_active" type="button" aria-selected="false">Button</button>
+  <button
+    class="button-group__button"
+    :class="{ 'button-group__button_active': isActive }"
+    type="button"
+    aria-selected="false"
+    @click="selectButton"
+  >
+    <slot></slot>
+  </button>
 </template>
 
 <script>
+import { inject } from "vue";
+
 export default {
-  name: 'UiButtonGroupItem',
+  name: "UiButtonGroupItem",
 
   props: {
     value: {
       required: true,
     },
+  },
+
+  setup(props) {
+    const uiButtonGroup = inject("UiButtonGroup");
+
+    if (!uiButtonGroup) {
+      console.warn("UiButtonGroupItem должен использоваться только внутри UiButtonGroup");
+    }
+    
+    const isActive = () => uiButtonGroup.selectedValue === props.value;
+    
+    const selectButton = () => {
+      uiButtonGroup.updateSelected(props.value);
+    };
+    
+    return {
+      isActive,
+      selectButton,
+    };
   },
 };
 </script>
