@@ -6,8 +6,13 @@
 
 <script>
 export default {
-  name: 'UiButtonGroup',
-emits: ['update:modelValue'],
+  name: "UiButtonGroup",
+  emits: ["update:modelValue"],
+  props: {
+    modelValue: {
+      required: true,
+    },
+  },
   data() {
     return {
       selectedValue: this.modelValue,
@@ -18,18 +23,18 @@ emits: ['update:modelValue'],
     modelValue(newValue) {
       this.selectedValue = newValue;
     },
-    '$parent.selectedValue': {
-    immediate: true, 
-    handler(newValue) {
-      this.isActive = newValue === this.value;
+    "$parent.selectedValue": {
+      immediate: true,
+      handler(newValue) {
+        this.isActive = newValue === this.value;
+      },
     },
-  },
   },
 
   methods: {
     updateSelected(value) {
       this.selectedValue = value;
-      this.$emit('update:modelValue', value);
+      this.$emit("update:modelValue", value);
     },
   },
 };
