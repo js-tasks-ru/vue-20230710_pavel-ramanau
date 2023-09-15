@@ -1,17 +1,8 @@
 <template>
-  <UiCalendarView :current-date="currentDate">
-    <template #default="{ day }">
-      <div class="calendar-view__cell-content">
-        <div class="calendar-view__cell-day">{{ day.day }}</div>
-        <div class="calendar-view__cell-content">
-          <ui-calendar-event
-            v-for="(meetup, meetupIndex) in filterMeetupsByDate(day.date, currentDate)"
-            :key="meetupIndex"
-            :meetup="meetup"
-          />
-        </div>
-      </div>
-    </template>
+  <UiCalendarView v-slot="{ timestamp }">
+    <UiCalendarEvent v-for="meetup in meetupsByDate[timestamp]" :key="meetup.id" tag="a" :href="`/meetups/${meetup.id}`"
+      >{{ meetup.title }}
+    </UiCalendarEvent>
   </UiCalendarView>
 </template>
 
@@ -29,51 +20,17 @@ export default {
     },
   },
 
-  components: {
-    UiCalendarView, 
-    UiCalendarEvent, 
-  },
-
-  data() {
-    return {
-      currentDate: new Date(),
-    };
-  },
-
   computed: {
-    titleData() {
-      return this.currentDate.toLocaleDateString(navigator.language, {
-        month: "long",
-        year: "numeric",
-      });
-    },
-  },
-
-  methods: {
-    filterMeetupsByDate(targetDate, currentDate) {
-      if (!targetDate) {
-        return [];
+    meetupsByDate() {
+      const result = {};
+      for (const meetup of this.meetups) {
+        if (!result[meetup.date]) {
+          result[meetup.date] = [meetup];
+        } else {
+          result[meetup.date].push(meetup);
+        }
       }
-
-      const currentYear = currentDate.getUTCFullYear();
-      const currentMonth = currentDate.getUTCMonth();
-      const targetDateObject = new Date(targetDate);
-      const dayNumber = targetDateObject.getUTCDate();
-
-      if (isNaN(dayNumber)) {
-        return [];
-      }
-
-      const filteredMeetups = this.meetups.filter((meetup) => {
-        const meetupDate = new Date(meetup.date);
-        return (
-          meetupDate.getUTCFullYear() === currentYear &&
-          meetupDate.getUTCMonth() === currentMonth &&
-          meetupDate.getUTCDate() === dayNumber
-        );
-      });
-
-      return filteredMeetups;
+      return result;
     },
   },
 };

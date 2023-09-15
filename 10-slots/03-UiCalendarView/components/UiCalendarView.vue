@@ -6,120 +6,91 @@
           class="calendar-view__control-left"
           type="button"
           aria-label="Previous month"
-          @click="previousMonth"
+          @click.stop="setPreviousMonth"
         ></button>
-        <div class="calendar-view__date">{{ titleData }}</div>
+        <div class="calendar-view__date">{{ localDate }}</div>
         <button
           class="calendar-view__control-right"
           type="button"
           aria-label="Next month"
-          @click="nextMonth"
+          @click.stop="setNextMonth"
         ></button>
       </div>
     </div>
 
     <div class="calendar-view__grid">
       <div
+        v-for="cell in calendarCells"
+        :key="cell.timestamp"
         class="calendar-view__cell"
-        :class="{ 'calendar-view__cell_inactive': !day.isCurrentMonth }"
+        :class="{ 'calendar-view__cell_inactive': !cell.isCurrentMonth }"
+        :aria-label="cell.localDateString"
         tabindex="0"
-        v-for="(day, index) in currentMonthDays"
-        :key="index"
       >
-        <slot :day="day"></slot> 
+        <div class="calendar-view__cell-day">{{ cell.date }}</div>
+        <div class="calendar-view__cell-content">
+          <slot
+            :timestamp="cell.timestamp"
+            :year="cell.year"
+            :month="cell.month"
+            :date="cell.date"
+            :inactive="!cell.isCurrentMonth"
+          ></slot>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import { addDays, addMonths, getFirstDateOfMonth, getLastDateOfMonth, getWeekday } from '../utils/dateUtils.js';
+
 export default {
-  name: "UiCalendarView",
+  name: 'UiCalendarView',
 
   data() {
     return {
-      date: new Date(),
+      currentDate: getFirstDateOfMonth(new Date()),
     };
   },
 
-  props: {
-    currentDate: {
-      type: Date, // Принимаем текущую дату из MeetupsCalendar
-      required: true,
-    },
-  },
-
   computed: {
-    titleData() {
-      return this.date.toLocaleDateString(navigator.language, {
-        month: "long",
-        year: "numeric",
+    localDate() {
+      return this.currentDate.toLocaleDateString(navigator.language, {
+        month: 'long',
+        year: 'numeric',
       });
     },
-    currentMonthDays() {
-      const currentYear = this.date.getUTCFullYear(); // Текущий год
-      const currentMonth = this.date.getUTCMonth(); // Текущий месяц, нумерация месяцев начинается с 0 до 11
 
-      const firstDay = new Date(Date.UTC(currentYear, currentMonth, 1)); // Первый день текущего месяца (год, месяц, номер дня)
-      const lastDay = new Date(Date.UTC(currentYear, currentMonth + 1, 0)); // Последний день текущего месяца.
+    calendarCells() {
+      const lastDateOfMonth = getLastDateOfMonth(this.currentDate);
+      const startDate = addDays(this.currentDate, -(getWeekday(this.currentDate) - 1));
+      const finishDate = addDays(lastDateOfMonth, 7 - getWeekday(lastDateOfMonth));
 
-      const startDayOfWeek = (firstDay.getUTCDay() - 1 + 7) % 7; // 0 - вс, 1 - пн... день недели, с которого начинается неделя
-      //должен быть на 1 меньше, но при этом Воскресение должно быть 6 (а не -1). Поэтому мы добавляем 7 и берем остаток от деления на 7.
+      const cells = [];
 
-      // количество дней в предыдущем месяце
-      // .getUTCDate() извлекает день месяца из объекта Date. это число будет количеством дней в предыдущем месяце.
-      const daysInPrevMonth = new Date(
-        Date.UTC(currentYear, currentMonth, 0)
-      ).getUTCDate();
-
-      let days = [];
-
-      // дни ПРЕДЫДУЩЕГО месяца, попадающие на первую неделю текущего месяца
-      for (let i = startDayOfWeek - 1; i >= 0; i--) {
-        days.push({
-          day: daysInPrevMonth - i,
-          date: null, // это дни предыдущего месяца и у них нет даты в формате UNIX Timestamp.
-          isCurrentMonth: false,
+      for (let dayOfCalendar = startDate; dayOfCalendar <= finishDate; dayOfCalendar = addDays(dayOfCalendar, 1)) {
+        cells.push({
+          timestamp: +dayOfCalendar,
+          year: dayOfCalendar.getUTCFullYear(),
+          month: dayOfCalendar.getUTCMonth(),
+          date: dayOfCalendar.getUTCDate(),
+          isCurrentMonth: dayOfCalendar.getUTCMonth() === this.currentDate.getUTCMonth(),
+          localDateString: dayOfCalendar.toLocaleDateString(navigator.language, { dateStyle: 'long' }),
         });
       }
 
-      // Перебираем дни от первого до последнего(ТЕКУЩИЙ месяц)
-      for (let date = firstDay; date <= lastDay; date.setUTCDate(date.getUTCDate() + 1)) {
-        const day = date.getUTCDate(); // получаем число (день месяца)
-        days.push({
-          day,
-          // date: +date, // Преобразуем дату в милисекунды
-          date: +new Date(date),
-          isCurrentMonth: true, // Флаг, указывающий, что день принадлежит текущему месяцу
-        });
-      }
-
-      // дни СЛЕДУЮЩЕГО месяца, попадающие на последнюю неделю текущего месяца
-      for (let i = 1; days.length % 7 !== 0; i++) {
-        days.push({
-          day: i,
-          date: null,
-          isCurrentMonth: false,
-        });
-      }
-
-      return days; //массив объектов  {day: 1, date: 1690833600000, isCurrentMonth: true}
+      return cells;
     },
   },
 
   methods: {
-    nextMonth() {
-      const newDate = new Date(this.date);
-      newDate.setUTCDate(15); // Устанавливаем безопасную дату перед изменением месяца
-      newDate.setUTCMonth(newDate.getUTCMonth() + 1);
-      this.date = newDate;
+    setPreviousMonth() {
+      this.currentDate = addMonths(this.currentDate, -1);
     },
 
-    previousMonth() {
-      const newDate = new Date(this.date);
-      newDate.setUTCDate(15); 
-      newDate.setUTCMonth(newDate.getUTCMonth() - 1);
-      this.date = newDate;
+    setNextMonth() {
+      this.currentDate = addMonths(this.currentDate, 1);
     },
   },
 };

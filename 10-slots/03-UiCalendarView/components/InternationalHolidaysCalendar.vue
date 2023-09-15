@@ -1,13 +1,8 @@
 <template>
-  <UiCalendarView :currentDate="currentDate">
-    <template #default="{ day }">
-      <div :class="{ holiday: shouldDisplayHoliday(day) }">
-        {{ day.day }}
-        <div v-for="holiday in getHolidaysForDate(day)" :key="holiday" class="holiday">
-          {{ holiday }}
-        </div>
-      </div>
-    </template>
+  <UiCalendarView v-slot="{ date, month }">
+    <div v-for="holiday in internationalHolidaysMap[month][date]" :key="holiday" class="holiday">
+      {{ holiday }}
+    </div>
   </UiCalendarView>
 </template>
 
