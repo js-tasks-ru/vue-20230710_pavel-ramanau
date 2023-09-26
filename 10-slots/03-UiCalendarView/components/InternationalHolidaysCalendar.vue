@@ -18,7 +18,6 @@ export default {
 
   data() {
     return {
-      currentDate: new Date(),
       // Data from: https://www.timeanddate.com/holidays/world/
       internationalHolidays: [
         { date: 7, month: 1, holiday: "International Programmers' Day" },
@@ -39,11 +38,7 @@ export default {
         { date: 8, month: 5, holiday: "World Red Cross and Red Crescent Day" },
         { date: 12, month: 5, holiday: "International Nurses Day" },
         { date: 13, month: 5, holiday: "Friday the 13th" },
-        {
-          date: 20,
-          month: 5,
-          holiday: "World Autoimmune / Autoinflammatory Arthritis Day",
-        },
+        { date: 20, month: 5, holiday: "World Autoimmune / Autoinflammatory Arthritis Day" },
         { date: 25, month: 5, holiday: "African Liberation Day" },
         { date: 31, month: 8, holiday: "International Overdose Awareness Day" },
         { date: 4, month: 9, holiday: "World Sexual Health Day" },
@@ -66,38 +61,20 @@ export default {
   },
 
   computed: {
-    // Вычисляемое свойство для фильтрации и преобразования массива праздников
+    // Для удобства можно создать вычисляемое свойство, которое приводит массив с данными к удобному виду
+    // Например, здесь создаётся массив 12 объектов (по одному на каждый месяц от 0 до 11)
+    // В каждом объекте поле - это день, а значение - массив праздников в этот день
     internationalHolidaysMap() {
-      const currentMonth = this.currentDate.getUTCMonth();
-      const filteredHolidays = this.internationalHolidays.filter((holiday) => {
-        return holiday.month - 1 === currentMonth; // Фильтруем праздники по текущему месяцу
-      });
-
-      const result = Array.from(Array(31), () => []); // Создаем массив для хранения праздников в каждый день месяца
-
-      for (const { date, holiday } of filteredHolidays) {
-        result[date - 1].push(holiday); // Добавляем праздник в соответствующий день месяца
-      }
-
-      return result;
-    },
-  },
-
-  methods: {
-    shouldDisplayHoliday(day) {
-      return day && day.date instanceof Date && !isNaN(day.date.getMonth());
-    },
-    getHolidaysForDate(day) {
-      if (day && day.date instanceof Date && !isNaN(day.date.getMonth())) {
-        const month = day.date.getMonth() + 1;
-        const date = day.date.getDate();
-
-        const key = `${month}-${date}`;
-        if (this.internationalHolidaysMap[key]) {
-          return this.internationalHolidaysMap[key];
+      const result = Array.from(Array(12), () => ({}));
+      for (const { date, month, holiday } of this.internationalHolidays) {
+        const jsMonth = month - 1;
+        if (!result[jsMonth][date]) {
+          result[jsMonth][date] = [holiday];
+        } else {
+          result[jsMonth][date].push(holiday);
         }
       }
-      return [];
+      return result;
     },
   },
 };
