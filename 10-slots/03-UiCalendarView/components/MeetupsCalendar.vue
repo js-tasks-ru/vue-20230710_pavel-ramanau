@@ -7,11 +7,11 @@
 </template>
 
 <script>
-import UiCalendarView from './UiCalendarView.vue';
-import UiCalendarEvent from './UiCalendarEvent.vue';
+import UiCalendarView from "./UiCalendarView.vue";
+import UiCalendarEvent from "./UiCalendarEvent.vue";
 
 export default {
-  name: 'MeetupsCalendar',
+  name: "MeetupsCalendar",
 
   components: {
     UiCalendarEvent,

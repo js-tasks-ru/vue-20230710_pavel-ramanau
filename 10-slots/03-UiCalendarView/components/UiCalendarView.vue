@@ -96,6 +96,7 @@ export default {
 };
 </script>
 
+
 <style scoped>
 .calendar-view {
 }
